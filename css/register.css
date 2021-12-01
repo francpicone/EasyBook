@@ -2,19 +2,19 @@
 @import url('https://fonts.googleapis.com/css?family=Lora&display=swap');
 
 html, body {
-   font-family: 'Lora' !important;
+    font-family: 'Lora' !important;
 }
 
 #registrati {
-   width: 150px;
-   outline: none;
-   border: none;
-   padding: 5px;
-   background-color: #CC0000;
-   color: white;
-   border-radius: 0px;
+    width: 150px;
+    outline: none;
+    border: none;
+    padding: 5px;
+    background-color: #CC0000;
+    color: white;
+    border-radius: 0px;
 }
 
 .input {
-   margin: 5px;
+    margin: 5px;
 }

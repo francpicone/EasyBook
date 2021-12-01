@@ -1,10 +1,52 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="css/Login.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-grid.css">
+
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login</title>
 </head>
 <body>
 
+<div class="container-fluid align-items-center justify-content-center" style="height: 100%;">
+    <div class="row align-items-center justify-content-center" style="height: 100%;">
+        <div class="col text-center align-items-center justify-content-center left-col">
+            <form id="login-form">
+                <div class="align-items-center mb-3 pb-1 justify-content-center">
+                    <img style="margin-bottom: 0px;" src="resources/open-magazine.png" height="52px">
+                    <h2>EasyBook</h2>
+                    <h6 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Easy, Fast, Free!</h6>
+                </div>
+
+                <div class="form-outline mb-4">
+                    <input placeholder="Username" type="email" id="username" class="form-control form-control-lg" />
+                    <!-- <label class="form-label" for="username">Username</label> -->
+                </div>
+
+                <div class="form-outline mb-4">
+                    <input placeholder="Password" type="password" id="password" class="form-control form-control-lg" />
+                    <!-- <label class="form-label" for="password">Password</label> -->
+                </div>
+
+                <div class="pt-1 mb-4">
+                    <button id="accedi" type="button">Accedi</button>
+                </div>
+
+                <a class="small text-muted" href="#!">Hai dimenticato la Password ?</a>
+                <p class="mb-5 pb-lg-2" style="color: #393f81;">Non hai un accout ? <a href="#!" style="color: #393f81;">Registrati.</a></p>
+                <!-- <a href="#!" class="small text-muted">Termini di utilizzo</a>
+                <a href="#!" class="small text-muted">Privacy policy</a> -->
+            </form>
+        </div>
+
+        <div class="col right-col" style="height: 100%;">
+            &nbsp;
+        </div>
+
+    </div>
+</div>
 </body>
 </html>

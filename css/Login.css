@@ -1,0 +1,58 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Lora&display=swap');
+
+html,body {
+    height: 100%;
+    font-family: 'Lora' !important;
+    background-color: #f1f1f1;
+}
+
+#username,#password {
+    border-radius: 0px;
+    border: none;
+    border-bottom: 1px solid;
+    border-color: lightgray;
+}
+
+#username:focus,#password:focus {
+    box-shadow: none;
+}
+
+#accedi {
+    width: 100%;
+    outline: none;
+    border: none;
+    padding: 5px;
+    background-color: #CC0000;
+    color: white;
+}
+
+#accedi:hover {
+    background-color: #ad0101;
+}
+
+.left-col{
+    background-color: transparent !important;
+}
+
+.right-col {
+  background: url("../Resources/library2.jpg");
+    background-size: cover;
+}
+
+@media only screen and (max-width: 600px) {
+    .right-col {
+        display: none;
+    }
+}
+
+#login-form{
+    max-width: 350px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+   /* border: 1px solid;
+    border-color: #cca677; */
+    box-shadow: 2px 2px 10px lightgray;
+}
+

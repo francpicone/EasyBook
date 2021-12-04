@@ -41,8 +41,8 @@ html,body {
 }
 
 @media only screen and (max-width: 600px) {
-    .right-col {
-        display: none;
+    .motto {
+        font-size: 12pt;
     }
 }
 

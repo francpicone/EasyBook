@@ -1,0 +1,15 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Lora&display=swap');
+
+html,body {
+    font-family: 'Lora';
+}
+
+.navbar {
+    background-color: #CC0000;
+    padding: 10px;
+}
+
+.navbar-brand-image {
+    margin-right: 10px;
+}

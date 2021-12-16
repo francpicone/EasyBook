@@ -1,37 +1,29 @@
-<!DOCTYPE HTML>
+ {% include 'navbar.html' %}
 
-<html lang="en">
-<head>
-    <link rel="stylesheet" href="../css/Login.css">
-    <link rel="stylesheet" href="../css/bootstrap.css">
-    <link rel="stylesheet" href="../css/bootstrap-grid.css">
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
+ <link rel="stylesheet" href="../../static/css/Login.css">
 
 <div class="container-fluid align-items-center justify-content-center" style="height: 100%;">
     <div class="row align-items-center justify-content-center" style="height: 100%;">
         <div class="col text-center align-items-center justify-content-center left-col">
-            <form id="login-form">
+            <form id="login-form" method="post">
                 <div class="align-items-center mb-3 pb-1 justify-content-center">
-                    <img style="margin-bottom: 0px;" src="../resources/open-magazine.png" height="52px">
+                    <img style="margin-bottom: 0px;" src="../../static/resources/open-magazine.png" height="52px">
                     <h2>EasyBook</h2>
                     <h6 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Easy, Fast, Free!</h6>
                 </div>
 
                 <div class="form-outline mb-4">
-                    <input placeholder="Username" type="email" id="username" class="form-control form-control-lg" />
+                    <input placeholder="Username" type="text" name="username" id="username" class="form-control form-control-lg" />
                     <!-- <label class="form-label" for="username">Username</label> -->
                 </div>
 
                 <div class="form-outline mb-4">
-                    <input placeholder="Password" type="password" id="password" class="form-control form-control-lg" />
+                    <input placeholder="Password" type="password" name="password" id="password" class="form-control form-control-lg" />
                     <!-- <label class="form-label" for="password">Password</label> -->
                 </div>
 
                 <div class="pt-1 mb-4">
-                    <button id="accedi" type="button">Accedi</button>
+                    <button id="accedi" type="submit" value="Accedi">Accedi</button>
                 </div>
 
                 <a class="small text-muted" href="#!">Hai dimenticato la Password ?</a>
@@ -47,5 +39,5 @@
 
     </div>
 </div>
-</body>
-</html>
+
+ {% include 'footer.html' %}

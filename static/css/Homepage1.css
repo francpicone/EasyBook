@@ -4,35 +4,38 @@
 html,body {
     height: 100%;
     font-family: 'Lora' !important;
-    background-color: #f1f1f1;
+    background-color: #f1f1f1 !important;
 }
 
-.search1{
-   height: 500px;
+.search-container-home {
+   height: 350px;
    background: url("../resources/books.jpg") !important;
     background-size: cover !important;
 }
 
-#search-home{
+#search-bar-home{
     height: 48px;
     width: 60%;
     border: none;
     outline: none;
     background-color: white;
     padding: 15px;
-    border-radius: 5px 0px 0px 5px;
+    border-radius: 10px 0px 0px 10px;
     font-size: 1rem;
 }
 
 #search-submit{
     height:48px;
     margin-left:-5px !important;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 25px;
+    padding-right: 25px;
     border: none;
+    border-left: 1px solid;
+    border-color: #e7e7e7;
     outline: none;
-    border-radius: 0px 5px 5px 0px;
-    margin-top: -20px !important;
+    border-radius: 0px 10px 10px 0px;
+    background-color: #CC0000;
+    color: white;
 }
 
 .motto {
@@ -41,8 +44,26 @@ html,body {
     font-size: 32pt;
 }
 
-@media only screen and (max-width: 600px) {
+.carousel-card  {
+    background-color: white !important;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.book-descr {
+    color: gray;
+}
+
+.book-carousel-image {
+    width: 96px;
+}
+
+@media only screen and (max-width: 480px) {
     .motto {
         font-size: 18pt;
+    }
+
+    #search-bar-home {
+        width: 70%;
     }
 }

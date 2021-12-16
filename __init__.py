@@ -15,12 +15,6 @@ def create_app(test_config=None):
     #  app.config['SQLALCHEMY_ECHOSQLALCHEMY_ECHO'] = True
     #  db = SQLAlchemy(app)
 
-    db = mysql.connector.connect(host="localhost",
-                                 port="3306",  # your host, usually localhost
-                                 user="root",  # your username
-                                 passwd="pass123",  # your password
-                                 db="EasyBook")  # name of the data base
-
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
@@ -38,5 +32,6 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
 
     from . import db
+    db.initialize_db()
 
     return app

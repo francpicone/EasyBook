@@ -1,37 +1,20 @@
-import os
-import mysql.connector
-from flask import Flask
+from flask import Flask, render_template, url_for, redirect, g
+import auth, db
+import db
 
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import insert, create_engine
+app = Flask(__name__, instance_relative_config=True)
+app.config['SECRET_KEY'] = 'SuperSecretKey'
+app.register_blueprint(auth.bp)
 
 
-def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    app.config['SECRET_KEY'] = 'SuperSecretKey'
-    #  app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:pass123@localhost:3306/EasyBook'
-    #  app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    #  app.config['SQLALCHEMY_ECHOSQLALCHEMY_ECHO'] = True
-    #  db = SQLAlchemy(app)
+@app.route('/')
+def index():
+    if g.user is not None:      #Se g.user non è nullo, quindi ho un utente loggato, reindirizzo il browser alla homapage
+        print(g.user)
+        return render_template('homepage.html')
+    else:                       #Diversamente, se g.user è None, quindi non ho un utente loggato, reindirizzo il browser alla pagina di login
+        return redirect(url_for('auth.login'))
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
 
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
-    from . import auth
-    app.register_blueprint(auth.bp)
-
-    from . import db
-    db.initialize_db()
-
-    return app
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')

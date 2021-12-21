@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+{% include 'navbar.html' %}
+
 <head>
     <meta charset="UTF-8">
 
@@ -26,23 +26,49 @@
     <div class="media align-items-end profile-head">
         <div class="profile mr-3"><img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80" alt="..." width="130" class="rounded mb-2 img-thumbnail"></div>
         <div class="media-body mb-5">
-            <h4 class="mt-0 mb-0">Mark Williams</h4>
+            <h4 class="mt-0 mb-0">{{ user[0] }} {{ user[1] }}</h4>
             <p class="small mb-4"> <i class="fas fa-map-marker-alt mr-2"></i>New York</p>
         </div>
     </div>
 </div>
 
-<div class="container-fluid mt-10 text-center">
-    <div class="qr-container">
-    <img src="../static/resources/qrtest.png">
+<div class="container-fluid mt-10 ps-4 pe-4">
+    <div class="row">
+        <div class="col-auto w-auto">
+                <div class="qr-container">
+                    <img src="{{ qrcode(g.user[9]) }}" width="198px">
+                </div>
+        </div>
+         <div class="col">
+                <h3>Il tuo rank : 116.75</h3>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-book-fill" viewBox="0 0 16 16">
+                 <path d="M8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                </svg>
+                <span class="user-stats-info">Libri presi in prestito: 0</span>
+                <div class="dropdown-divider"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-calendar2-check-fill" viewBox="0 0 16 16">
+                 <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-2.6 5.854a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+                </svg>
+                <span class="user-stats-info">Posti in aula prenotati: 0</span>
+                <div class="dropdown-divider"></div>
+         </div>
+         <div class="col">
+             <h3>Impostazioni</h3>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-book-fill" viewBox="0 0 16 16">
+                 <path d="M8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                </svg>
+                <span class="user-stats-info">Reimposta password</span>
+                <div class="dropdown-divider"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-calendar2-check-fill" viewBox="0 0 16 16">
+                 <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-2.6 5.854a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+                </svg>
+                <span class="user-stats-info">Posti in aula prenotati: 0</span>
+                <div class="dropdown-divider"></div>
+         </div>
     </div>
 </div>
 
-
-<div class="container-fluid mt-3 ps-4 pe-4">
-    <h5>Descrizione</h5>
-    <p class="small">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
-</div>
+{% include 'footer.html' %}
 
 </body>
-</html>
+

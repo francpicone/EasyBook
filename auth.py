@@ -1,6 +1,6 @@
 import functools
+import string, random
 import sys
-
 import db, mysql.connector, re
 from datetime import datetime
 from flask import (
@@ -37,6 +37,12 @@ def checkbirthdate(birthdate):
     else:
         return True
 
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
+
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -66,14 +72,15 @@ def register():
 
         if error is None:
             password = generate_password_hash(password)
+            token = get_random_string(64)
             dbconn = mysql.connector.connect(**db.get_config())
             cursor = dbconn.cursor()
 
             register_user = ("INSERT INTO UTENTE "
-                             "(nome_ut, cognome_ut, email, CF, data_nascita, PW)"
-                             "VALUES (%s, %s, %s, %s, %s, %s)")
+                             "(nome_ut, cognome_ut, email, CF, data_nascita, PW, citta_ut, token_ut)"
+                             "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
-            data = (nome, cognome, email, cf, datanascita, password)
+            data = (nome, cognome, email, cf, datanascita, password, citta, token)
 
             cursor.execute(register_user, data)
 
@@ -81,7 +88,7 @@ def register():
             dbconn.commit()
             dbconn.close()
 
-            return redirect(url_for('auth.login'))
+            return render_template('auth/registrazione_end.html')
         flash(error)
     return render_template('auth/register.html')
 
@@ -119,7 +126,7 @@ def login():
             if error is None:
                 session.clear()
                 session['CF'] = user[3]
-                return redirect(url_for('index'))
+                return redirect(url_for('home.index'))
 
             flash(error)
 
@@ -129,18 +136,36 @@ def login():
     return render_template('auth/login.html')
 
 
-#Funzione eseguita prima di qualsiasi richiesta
+# Funzione eseguita prima di qualsiasi richiesta
 @bp.before_app_request
 def load_logged_in_user():
-    user_cf = session.get('CF')     #Controllo che vi sia già un utente loggato attraverso la funzione session.get la quale mi restituirà il CF se è loggato / None se non è loggato
+    user_cf = session.get(
+        'CF')  # Controllo che vi sia già un utente loggato attraverso la funzione session.get la quale mi restituirà il CF se è loggato / None se non è loggato
 
-    if user_cf is None:             #Se ho avuto None --> g.user sarà = None
+    if user_cf is None:  # Se ho avuto None --> g.user sarà = None
         g.user = None
     else:
-        dbconn = mysql.connector.connect(**db.get_config())     #Se ho avuto il CF dell'utente vado a prelevarmi i dati dal DB  dell'utente con quel CF e a metterli in g.user
+        dbconn = mysql.connector.connect(
+            **db.get_config())  # Se ho avuto il CF dell'utente vado a prelevarmi i dati dal DB  dell'utente con quel CF e a metterli in g.user
         cursor = dbconn.cursor()
         query = 'SELECT * FROM UTENTE WHERE CF = %s'
-        cursor.execute(query, (user_cf, ))
+        cursor.execute(query, (user_cf,))
         g.user = cursor.fetchone()
         print(g.user)
 
+
+@bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('auth.login'))
+
+
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+
+        return view(**kwargs)
+
+    return wrapped_view

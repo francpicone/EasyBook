@@ -1,3 +1,7 @@
+html,body {
+    font-family: 'Lora';
+}
+
 .footer {
     height: 48px;
     background-color: #CC0000;

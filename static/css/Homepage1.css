@@ -9,6 +9,7 @@ html,body {
 
 .search-container-home {
    height: 350px;
+    margin-top: 49px;
    background: url("../resources/books.jpg") !important;
     background-size: cover !important;
 }
@@ -76,10 +77,15 @@ html,body {
 
 @media only screen and (max-width: 480px) {
     .motto {
-        font-size: 18pt;
+        font-size: 12pt;
     }
 
     #search-bar-home {
         width: 70%;
+    }
+
+    .search-container-home {
+        height: 200px;
+        margin-top: 49px;
     }
 }

@@ -1,0 +1,30 @@
+{% include 'navbar.html' %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca</title>
+        <link rel="stylesheet" href="../../static/css/biblioteca.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+</head>
+<body>
+
+<div class="container mt-100 p-3">
+    <h2>{{ biblioteca[1] }}</h2>
+    <span class="testo-rosso">Indirizzo :</span><span class="testo-nero"> {{ biblioteca[3] }}</span><br>
+    <span class="testo-rosso">Tel: </span><span class="testo-nero"> {{ biblioteca[2] }}</span>
+     <div class="mt-3" id="map" style="height: 300px; width: 100%;"></div>
+</div>
+
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+
+<script>
+    var map = L.map('map').setView([{{ biblioteca[4] }}, {{ biblioteca[5] }}], 30);
+
+   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+   }).addTo(map);
+
+</script>
+
+</body>

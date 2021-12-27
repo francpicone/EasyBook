@@ -2,10 +2,6 @@
 
 <head>
     <meta charset="UTF-8">
-
-    <link rel="stylesheet" href="../static/css/bootstrap-grid.css">
-    <link rel="stylesheet" href="../static/css/bootstrap-utilities.css">
-    <link rel="stylesheet" href="../static/css/bootstrap.css">
     <link rel="stylesheet" href="../static/css/user.css">
 
   <title>User</title>
@@ -39,7 +35,7 @@
                     <img src="{{ qrcode(g.user[9]) }}" width="198px">
                 </div>
         </div>
-         <div class="col-md mobile-mt-30">
+         <div class="user-settings col-md mobile-mt-30">
                 <h3>Il tuo rank : 116.75</h3>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-book-fill" viewBox="0 0 16 16">
                  <path d="M8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
@@ -52,23 +48,82 @@
                 <span class="user-stats-info">Posti in aula prenotati: 0</span>
                 <div class="dropdown-divider"></div>
          </div>
-         <div class="col-md mobile-mt-30">
+         <div class=" user-settings col-md mobile-mt-30">
              <h3>Impostazioni</h3>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-book-fill" viewBox="0 0 16 16">
-                 <path d="M8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-asterisk" viewBox="0 0 16 16">
+                    <path d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z"/>
                 </svg>
-                <span class="user-stats-info">Reimposta password</span>
-                <div class="dropdown-divider"></div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-calendar2-check-fill" viewBox="0 0 16 16">
-                 <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-2.6 5.854a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
-                </svg>
-                <span class="user-stats-info">Posti in aula prenotati: 0</span>
+                <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><span class="user-stats-info">Reimposta password</span></a>
                 <div class="dropdown-divider"></div>
          </div>
     </div>
 </div>
 
-{% include 'footer.html' %}
+ <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Cambia password</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="changepw" method="POST"  action="{{ url_for('auth.reimposta_pw') }}">
+              <label for="vecchia-pw">Vecchia Password</label>
+              <input class="mb-2" type="password" id="vecchia-pw" name="vecchia-pw"><br>
+              <label for="nuova-pw">Nuova password</label>
+              <input class="mb-2" type="password" id="nuova-pw" name="nuova-pw"><br>
+              <label for="nuova-pw2">Reinserisci la nuova password</label>
+              <input class="mb-2" type="password" id="nuova-pw2" name="nuova-pw2">
+              <span class="oldpw_not_corr" id="oldpw_not_corr">La password inserita è errata.</span>
+              <span class="newpw_not_corr" id="newpw_not_corr">Le due password non corrispondono.</span>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                <button type="submit" class="btn btn-primary">Reimposta password</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+
+    // Attach a submit handler to the form
+  // Attach a submit handler to the form
+
+
+$('#changepw').submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        url: '{{ url_for('auth.reimposta_pw') }}',
+        data: $(this).serialize(),
+        type: 'POST',
+        success: function(data) {
+
+            alert(data.status)
+
+            if (data.status === 'ErrorNewPW'){
+                document.getElementById('nuova-pw2').style.border = '2px solid red';
+                document.getElementById('nuova-pw').style.border = '2px solid red';
+                document.getElementById('newpw_not_corr').style.display = 'inline-block';
+            }
+
+            if (data.status === 'ErrorOldPW'){
+                document.getElementById('vecchia-pw').style.border = '2px solid red';
+                document.getElementById('oldpw_not_corr').style.display = 'inline-block';
+            }
+
+            if (data.status === 'Success'){
+                window.location = '{{ url_for('get_profile') }}';
+            }
+        }
+    });
+});
+
+    </script>
 
 </body>
 

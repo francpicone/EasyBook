@@ -18,8 +18,12 @@
                 {% for autore in autori %}
                 <span class="small">{{ autore[0] }}{{ autore[1] }}</span><br>
                 {% endfor %}
-                <span class="titolo-libro">Genere:</span> <span class="small">{{ book[6] }}</span><br>
-                <span class="titolo-libro">Editore:</span> <span class="small">{{ book[6] }}</span><br>
+                {% for genere in generi %}
+                <span class="titolo-libro">Genere:</span> <span class="small"> {{ genere[0] }} </span><br>
+                {% endfor %}
+                {% for editore in editori %}
+                <span class="titolo-libro">Editore:</span> <span class="small">{{ editore[0] }}</span><br>
+                {% endfor %}
                 <span class="titolo-libro">Edizione:</span> <span class="small">{{ book[6] }}</span><br>
             </div>
         </div>
@@ -39,7 +43,7 @@
                         </div>
                         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                             <div class="card-body">
-                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                {{ book[9] }}
                             </div>
                         </div>
                     </div>
@@ -47,9 +51,17 @@
                 <h6 class="titolo-libro">Disponibile qui:</h6>
                 <table class="mt-3">
                  <tr>
-                     <th class="p-0">Biblioteca</th>
-                     <th class="p-0">Prenota</th>
+                     <th class="p-0 pb-1 pt-1">Biblioteca</th>
+                     <th class="p-0">Quantità</th>
+                     <th class="p-0"></th>
                  </tr>
+                    {% for disponibile in disponibili %}
+                    <tr>
+                    <th class="p-0">{{ disponibile[0] }}</th>
+                    <th class="p-0">{{ disponibile[1] }}</th>
+                    <th><button class="button-prenota">Prenota</button></th>
+                    </tr>
+                    {% endfor %}
                 </table>
             </div>
         </div>

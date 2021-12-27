@@ -5,6 +5,11 @@ html, body {
     font-family: 'Lora';
 }
 
+.user-settings a {
+    color: black !important;
+    text-decoration: none !important;
+}
+
 .user-image {
     width: 128px !important;
     border-radius: 50%;
@@ -43,6 +48,13 @@ html, body {
     vertical-align: middle;
     margin-left: 5px;
 }
+
+.newpw_not_corr,
+.oldpw_not_corr  {
+    color: red;
+    display: none;
+}
+
 
 
 @media only screen and (max-width: 480px) {

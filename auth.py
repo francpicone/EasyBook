@@ -4,7 +4,7 @@ import sys
 import db, mysql.connector, re
 from datetime import datetime
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify, make_response
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -36,6 +36,7 @@ def checkbirthdate(birthdate):
         return False
     else:
         return True
+
 
 def get_random_string(length):
     # choose from all lowercase letter
@@ -169,3 +170,34 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+
+@bp.route('/reimpostapw', methods=('GET', 'POST'))
+@login_required
+def reimposta_pw():
+    if request.method == 'POST':
+        vecchia_pw = request.form['vecchia-pw']
+        nuova_pw = request.form['nuova-pw']
+        nuova_pw_2 = request.form['nuova-pw2']
+
+        error = None
+
+        if not check_password_hash(g.user[6], vecchia_pw):
+            error = 'oldpass_false'
+            return jsonify(status='ErrorOldPW')
+
+        if nuova_pw != nuova_pw_2:
+            error = 'Password non corrispondenti'
+            return jsonify(status='ErrorNewPW')
+
+        if error is None:
+            dbconn = mysql.connector.connect(**db.get_config())
+            cursor = dbconn.cursor()
+            q_change_pw = ('UPDATE UTENTE SET PW=%s WHERE EMAIL = %s')
+            cursor.execute(q_change_pw, (generate_password_hash(nuova_pw), g.user[2]))
+
+            dbconn.commit()
+            cursor.close()
+            dbconn.close()
+
+            return jsonify(status='Success')

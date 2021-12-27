@@ -39,18 +39,24 @@ html, body {
     box-shadow: none;
 }
 
+.button-prenota {
+    background-color: #CC0000;
+    color: white;
+    border: none;
+    outline: none;
+}
+
 table {
   border-collapse: collapse;
   width: 100%;
 }
 
 td, th {
-  border-bottom: 1px solid #dddddd;
   text-align: left;
   padding: 5px;
     font-weight: normal;
 }
 
 tr:nth-child(even) {
-  background-color: #dddddd;
+  background-color: #f1f1f1;
 }

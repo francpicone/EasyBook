@@ -61,4 +61,8 @@ html, body {
         align-items: center;
     }
 
+    .mobile-mt-30 {
+        margin-top: 30px !important;
+    }
+
 }

@@ -17,8 +17,8 @@
       <div class="row text-center search-container-home justify-content-center align-content-center">
           <div class="col justify-content-center align-content-center p-0">
               <h2 class="motto">La tua biblioteca a portata di click.</h2>
-              <form action="/action_page.php">
-                  <input type="text" placeholder="Cerca libri o biblioteche..." name="search" id="search-bar-home" >
+              <form action="#">
+                  <input type="search" placeholder="Cerca libri o biblioteche..." name="search" id="search-bar-home" >
                   <button type="submit" id="search-submit"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 20 20">
                       <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                   </svg></button>
@@ -29,18 +29,21 @@
 
 <!-- Carosello -->
 
-<div class="container-fluid w-100 mt-2 justify-content-center">
+<div class="container-fluid w-100 justify-content-center mt-50">
     <div class="site-section bg-left-half mb-5 w-100">
-        <div class="container owl-2-style w-100">
-            <div class="owl-carousel owl-2 w-100">
+        <div class="container owl-2-style w-100 mw-100">
+            <div class="full-width-slider owl-carousel owl-2-style w-100">
                 {% for book in books %}
-                <div class="media-29101 carousel-card">
+                <a class="carousel-link" href="/libro/{{ book[0] }}">
+                 <div class="media-29101 carousel-card">
                     <div class="text-center">
                     <img class="book-carousel-image" src="{{ book[7] }}" alt="Image">
                     </div>
-                    <h5 class="book-title">{{ book[4] }}</h5>
-                    <span class="book-descr">Descrizione del libro</span><br>
-                    <span class="book-descr">Edizione: {{ book[6] }}</span><br>
+                    <h5 class="book-title fw-bolder">{{ book[4] }}</h5>
+                    <span class="book-descr-title small">ISBN:</span> <span class="book-descr small">{{ book[0] }}</span><br>
+                    <span class="book-descr-title small">Autore(i):</span> <span class="book-descr small">Autore</span><br>
+                    <span class="book-descr-title small">Descrizione del libro</span><br>
+                    <span class="book-descr-title small">Edizione:</span> <span class="book-descr small">{{ book[6] }}</span><br>
                         {% for i in range(book[5]) %}
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gold" class="bi bi-star-fill" viewBox="0 0 16 16">
                           <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
@@ -52,7 +55,8 @@
                           <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                         </svg>
                         {% endfor %}
-                </div>
+                 </div>
+                </a>
                 {% endfor %}
             </div>
         </div>
@@ -62,6 +66,17 @@
 <script src="../static/js/popper.min.js"></script>
 <script src="../static/js/owl.carousel.min.js"></script>
 <script src="../static/js/main.js"></script>
+<script>
+  $(document).ready(function() {
+    $('.owl-carousel').owlCarousel({
+    items: 12,
+    margin:10,
+    loop:true,
+    autoWidth:true,
+        center:true,
+})
+});
+</script>
 </body>
 </html>
 

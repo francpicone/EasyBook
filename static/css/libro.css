@@ -1,0 +1,56 @@
+html, body {
+    font-family: 'Lora';
+}
+
+.titolo-libro {
+    color: #CC0000;
+}
+
+.info-libro {
+    color: black;
+}
+
+.mt-100 {
+    margin-top: 100px;
+}
+
+.commutatore {
+    border: 1px solid lightgray;
+    padding: 10px;
+}
+
+.card-header-commutatore {
+    background-color: transparent;
+    border: none !important;
+}
+
+.card-commutatore {
+    border: none;
+}
+
+.button-header-commutatore {
+    padding: 0 !important;
+    text-decoration: none !important;
+    color: #CC0000 !important;
+}
+
+.button-header-commutatore:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border-bottom: 1px solid #dddddd;
+  text-align: left;
+  padding: 5px;
+    font-weight: normal;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}

@@ -47,7 +47,7 @@ def get_random_string(length):
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-        nome = request.form['nome']
+        name = request.form['nome']
         cognome = nome = request.form['cognome']
         cf = request.form['cf']
         email = request.form['email']
@@ -80,7 +80,7 @@ def register():
                              "(nome_ut, cognome_ut, email, CF, data_nascita, PW, citta_ut, token_ut)"
                              "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
-            data = (nome, cognome, email, cf, datanascita, password, citta, token)
+            data = (name, cognome, email, cf, datanascita, password, citta, token)
 
             cursor.execute(register_user, data)
 

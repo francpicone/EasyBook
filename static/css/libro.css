@@ -46,6 +46,10 @@ html, body {
     outline: none;
 }
 
+.button-prenota:hover {
+    background-color: #960000;
+}
+
 table {
   border-collapse: collapse;
   width: 100%;

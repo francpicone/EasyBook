@@ -17,8 +17,8 @@
       <div class="row text-center search-container-home justify-content-center align-content-center">
           <div class="col justify-content-center align-content-center p-0">
               <h2 class="motto">La tua biblioteca a portata di click.</h2>
-              <form action="#">
-                  <input type="search" placeholder="Cerca libri o biblioteche..." name="search" id="search-bar-home" >
+              <form action="{{ url_for('biblioteca.search') }}" method="GET">
+                  <input type="search" placeholder="Cerca libri o biblioteche..." name="search" id="search-bar-home">
                   <button type="submit" id="search-submit"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 20 20">
                       <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                   </svg></button>
@@ -30,6 +30,9 @@
 <!-- Carosello -->
 
 <div class="container-fluid w-100 justify-content-center mt-50">
+    <div class="ms-1">
+    <h2>Suggeriti per te</h2>
+    </div>
     <div class="site-section bg-left-half mb-5 w-100">
         <div class="container owl-2-style w-100 mw-100">
             <div class="full-width-slider owl-carousel owl-2-style w-100">

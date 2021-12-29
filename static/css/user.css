@@ -25,8 +25,8 @@ html, body {
     transform: translateY(3rem);
 }
 
-.mt-10 {
-    margin-top: 120px;
+.mt-160 {
+    margin-top: 160px;
 }
 
 .qr-container {
@@ -55,7 +55,36 @@ html, body {
     display: none;
 }
 
+.modal-content {
+    border-radius: 0;
+    border: none;
+}
 
+.close-modal {
+    border: none;
+    background-color: transparent;
+    font-size: 24pt;
+    color: white;
+}
+
+.modal-header {
+    background-color: #CC0000;
+    color: white;
+    border-radius: 0 !important;
+    border: none;
+}
+
+.btn-red {
+    background-color: #CC0000;
+    color: white;
+    border-radius: 0;
+    border: none;
+}
+
+.btn-secondary {
+    border-radius: 0 !important;
+    border: none;
+}
 
 @media only screen and (max-width: 480px) {
     .qr-container {

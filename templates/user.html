@@ -18,7 +18,7 @@
     </div>
 </div> -->
 
-<div class="header-user px-4 pt-0 pb-4 cover">
+<div class="header-user px-4 pt-5 pb-4 cover">
     <div class="media align-items-end profile-head">
         <div class="profile mr-3"><img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80" alt="..." width="130" class="rounded mb-2 img-thumbnail"></div>
         <div class="media-body mb-5">
@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<div class="container-fluid mt-10 ps-4 pe-4">
+<div class="container-fluid mt-160 ps-4 pe-4">
     <div class="row center-mobile">
         <div class="col-auto">
                 <div class="qr-container">
@@ -40,7 +40,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-book-fill" viewBox="0 0 16 16">
                  <path d="M8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
                 </svg>
-                <span class="user-stats-info">Libri presi in prestito: {{ num_lib[0] }}</span>
+                <a href="{{ url_for('biblioteca.get_libreria') }}"><span class="user-stats-info">Libri presi in prestito:{% if num_lib==None %} 0 {% endif %} {% if num_lib != None %}{{ num_lib[0] }}{% endif %}</span></a>
                 <div class="dropdown-divider"></div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-calendar2-check-fill" viewBox="0 0 16 16">
                  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-2.6 5.854a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
@@ -65,23 +65,23 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Cambia password</h5>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <button type="button" class="close close-modal" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <form id="changepw" method="POST"  action="{{ url_for('auth.reimposta_pw') }}">
               <label for="vecchia-pw">Vecchia Password</label>
-              <input class="mb-2" type="password" id="vecchia-pw" name="vecchia-pw"><br>
+              <input class="mt-1 mb-2 form-control form-control-lg" type="password" id="vecchia-pw" name="vecchia-pw"><br>
               <label for="nuova-pw">Nuova password</label>
-              <input class="mb-2" type="password" id="nuova-pw" name="nuova-pw"><br>
-              <label for="nuova-pw2">Reinserisci la nuova password</label>
-              <input class="mb-2" type="password" id="nuova-pw2" name="nuova-pw2">
+              <input class="mt-1 mb-2 form-control form-control-lg" type="password" id="nuova-pw" name="nuova-pw"><br>
+              <label for="nuova-pw2">Conferma la nuova password</label>
+              <input class="mt-1 mb-2 form-control form-control-lg" type="password" id="nuova-pw2" name="nuova-pw2">
               <span class="oldpw_not_corr" id="oldpw_not_corr">La password inserita è errata.</span>
               <span class="newpw_not_corr" id="newpw_not_corr">Le due password non corrispondono.</span>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                <button type="submit" class="btn btn-primary">Reimposta password</button>
+                <button type="submit" class="btn btn-primary btn-red">Reimposta password</button>
               </div>
           </form>
         </div>
@@ -93,7 +93,6 @@
 
     // Attach a submit handler to the form
   // Attach a submit handler to the form
-
 
 $('#changepw').submit(function(e) {
     e.preventDefault();
@@ -122,7 +121,6 @@ $('#changepw').submit(function(e) {
         }
     });
 });
-
     </script>
 
 </body>

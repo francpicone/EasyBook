@@ -1,0 +1,87 @@
+ {% include 'navbar.html' %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>La tua libreria</title>
+    <link rel="stylesheet" href="../../static/css/libreria_utente.css">
+</head>
+<body>
+
+<div class="container mt-100 p-3">
+    <h1>La tua libreria</h1>
+</div>
+
+{% if books == [] %}
+    <div class="container justify-content-center align-items-center text-center mt-100">
+        <h1>Ops! La tua libreria sembra essere vuota.</h1>
+        <img class="mt-5" src="../../static/resources/ops_img.png" width="196px">
+    </div>
+{% endif %}
+
+<div class="container">
+    {% for book in books %}
+    <div class="row book-row mt-3">
+        <div class="col-auto">
+            <a href="/libro/{{ book[0] }}">
+            <img src="{{ book[7] }}" width="96px">
+            </a>
+        </div>
+        <div class="col-auto">
+            <h5>{{ book[4] }}</h5>
+            <span>ID prenotazione: {{ book[20] }}</span><br>
+            <span>Data prestito: {{ book[23] }}</span><br>
+            <span>Data riconsegna: {{ book[24] }}</span><br>
+            <span>Biblioteca: {{ book[15] }}</span><br>
+            <div class="dropdown-divider"></div>
+            {% if book[25] == 0 %}
+                <span class="stato-prestito-daritirare small">DA RITIRARE</span>
+            {% endif %}
+            {% if book[25] == 1 %}
+                <span class="stato-prestito-dariconsegnare small">DA RICONSEGNARE</span>
+            {% endif %}
+            {% if book[25] == 2 %}
+                <span class="stato-prestito-riconsegnato small">RICONSEGNATO</span>
+            {% endif %}
+            <form method="POST" class="annullaprenotazione mt-2">
+            <input type="hidden" name="idprestito" value="{{ book[20] }}">
+            <input type="submit" id="annullapr_{{ book[20] }}" class="small btn-annulla-prenotazione" value="ANNULLA PRENOTAZIONE">
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+$('.annullaprenotazione').submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        url: '{{ url_for('biblioteca.annulla_prenotazione') }}',
+        data: $(this).serialize(),
+        type: 'POST',
+        success: function(data) {
+
+            if(data.status === 'ok'){
+                document.getElementById("annullapr_"+data.IDPrestito).value = 'ANNULLATO'
+                document.getElementById("annullapr_"+data.IDPrestito).style.backgroundColor = 'lightgray'
+                document.getElementById("annullapr_"+data.IDPrestito).style.border = '1px solid lightgray'
+                document.getElementById("annullapr_"+data.IDPrestito).style.color = 'gray'
+                document.getElementById("annullapr_"+data.IDPrestito).style.pointerEvents = 'none'
+
+                setTimeout(function(){
+                    window.location.reload()
+                    }, 2000);
+            }
+
+            if (data.status === 'error'){
+                alert(data.msg)
+            }
+
+        },
+        error: function (){
+            alert("error")
+        },
+    });
+});
+</script>
+
+</body>

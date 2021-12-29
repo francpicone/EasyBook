@@ -18,10 +18,8 @@ def get_profile():
 
     dbconn = mysql.connector.connect(**db.get_config())
     cursor = dbconn.cursor()
-    q_get_num_libri_prestito = ('select count(num_copia) as libri_presi from COPIA_LIBRO'
-    ' join PRENDE_IN_PRESTITO on num_copia=num_copia_prestito'
-    ' join UTENTE on PRENDE_IN_PRESTITO.codice_fiscale=UTENTE.cf')
-    cursor.execute(q_get_num_libri_prestito)
+    q_get_num_libri_prestito = ('select count(num_copia) as libri_presi from COPIA_LIBRO join PRENDE_IN_PRESTITO on num_copia=num_copia_prestito join UTENTE on PRENDE_IN_PRESTITO.codice_fiscale=UTENTE.cf WHERE CF = %s GROUP BY CF')
+    cursor.execute(q_get_num_libri_prestito, (g.user[3], ))
     num_lib_prestito = cursor.fetchone()
 
     return render_template('user.html', user=g.user, num_lib=num_lib_prestito)

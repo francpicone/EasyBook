@@ -1,0 +1,43 @@
+.mt-100 {
+    margin-top: 100px;
+}
+
+.book-row {
+    background-color: whitesmoke;
+    padding: 10px;
+}
+
+.stato-prestito-daritirare {
+    padding: 3px;
+    background-color: dodgerblue;
+    color: white;
+}
+
+.stato-prestito-riconsegnato {
+    padding: 3px;
+    background-color: green;
+    color: white;
+}
+
+.stato-prestito-dariconsegnare {
+    padding: 3px;
+    background-color: red;
+    color: white;
+}
+
+.btn-annulla-prenotazione {
+    border: 1px solid gray;
+}
+
+.btn-annulla-prenotazione:hover {
+    background-color: gray;
+    color: white;
+}
+
+.book-descr {
+    color: gray;
+}
+
+.book-descr-title {
+    color: #CC0000;
+}

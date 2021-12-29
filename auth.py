@@ -96,10 +96,10 @@ def register():
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
+    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        error = None
 
         if not username:
             error = 'L''username è richiesta'
@@ -119,22 +119,24 @@ def login():
             user = cursor.fetchone()
             print(user)
 
+            cursor.close()
+            dbconn.close()
+
             if user is None:
-                error = 'Username non corretta'
+                error = 'loginerror'
+
             elif not check_password_hash(user[6], password):
-                error = 'Password non corretta'
+                error = 'loginerror'
 
             if error is None:
                 session.clear()
                 session['CF'] = user[3]
                 return redirect(url_for('home.index'))
 
-            flash(error)
-
-            cursor.close()
-            dbconn.close()
-
-    return render_template('auth/login.html')
+    if g.user is None:
+        return render_template('auth/login.html', err=error)
+    else:
+        return redirect(url_for('home.index'))
 
 
 # Funzione eseguita prima di qualsiasi richiesta

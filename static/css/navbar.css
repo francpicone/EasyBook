@@ -15,3 +15,8 @@ html,body {
 .navbar-brand-image {
     margin-right: 10px;
 }
+
+.dropdown-menu {
+    border-radius: 0px;
+    border: none;
+}

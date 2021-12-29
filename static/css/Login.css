@@ -31,6 +31,10 @@ html,body {
     background-color: #ad0101;
 }
 
+#loginerror {
+    display: none;
+}
+
 .left-col{
     background-color: transparent !important;
 }

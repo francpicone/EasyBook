@@ -57,9 +57,15 @@
                  </tr>
                     {% for disponibile in disponibili %}
                     <tr>
-                    <th class="p-0">{{ disponibile[0] }}</th>
                     <th class="p-0">{{ disponibile[1] }}</th>
-                    <th><button class="button-prenota">Prenota</button></th>
+                    <th class="p-0">{{ disponibile[2] }}</th>
+                    <th>
+                        <form class="prenota" id="prenota{{ disponibile[0] }}">
+                            <input type="hidden" id="bib" name="bib" value="{{ disponibile[0] }}">
+                            <input type="hidden" id="isbn" name="isbn" value="{{ book[0] }}">
+                            <input class="button-prenota" type="submit" value="PRENOTA" id="btn_prenota{{ disponibile[0] }}">
+                        </form>
+                    </th>
                     </tr>
                     {% endfor %}
                 </table>
@@ -69,6 +75,40 @@
     </div> <!-- end container -->
 
 
+<script>
 
+    // Attach a submit handler to the form
+  // Attach a submit handler to the form
+
+$('.prenota').submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        url: '{{ url_for('biblioteca.prenota_libro') }}',
+        data: $(this).serialize(),
+        type: 'POST',
+        success: function(data) {
+
+            if(data.status === 'ok'){
+                document.getElementById("btn_prenota"+data.bib).value = 'PRENOTATO'
+                document.getElementById("btn_prenota"+data.bib).style.backgroundColor = 'lightgray'
+
+                 setTimeout(function(){
+                    window.location.reload()
+                    }, 2000);
+
+            }
+
+            if (data.status === 'alreadybooked'){
+                alert(data.msg)
+            }
+
+        },
+        error: function (){
+            alert("error")
+        },
+    });
+});
+
+</script>
 
 </body>

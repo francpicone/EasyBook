@@ -2,6 +2,11 @@ html, body {
     font-family: 'Lora';
 }
 
+a {
+    text-decoration: none;
+    color: black;
+}
+
 .titolo-libro {
     color: #CC0000;
 }

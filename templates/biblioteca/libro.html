@@ -57,7 +57,7 @@
                  </tr>
                     {% for disponibile in disponibili %}
                     <tr>
-                    <th class="p-0">{{ disponibile[1] }}</th>
+                    <th class="p-0"><a href="{{ url_for('biblioteca.get_biblioteca', bibid=disponibile[0]) }}">{{ disponibile[1] }}</a></th>
                     <th class="p-0">{{ disponibile[2] }}</th>
                     <th>
                         <form class="prenota" id="prenota{{ disponibile[0] }}">

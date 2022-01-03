@@ -44,6 +44,11 @@
    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
    }).addTo(map);
+
+   L.marker([{{ biblioteca[4] }}, {{ biblioteca[5] }}]).addTo(map)
+    .bindPopup('{{ biblioteca[1] }} <br> Tel. {{ biblioteca[2] }} <br> Indirizzo: {{ biblioteca[3] }}')
+    .openPopup();
+
    //AjaxRequest
 
     $('#btn-prenota-aula').on('click', function(e) {

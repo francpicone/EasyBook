@@ -28,23 +28,23 @@
         </div>
         <div class="col-auto">
             <h5>{{ book[4] }}</h5>
-            <span>ID prenotazione: {{ book[20] }}</span><br>
-            <span>Data prestito: {{ book[23] }}</span><br>
-            <span>Data riconsegna: {{ book[24] }}</span><br>
+            <span>ID prenotazione: {{ book[21] }}</span><br>
+            <span>Data prestito: {{ book[24] }}</span><br>
+            <span>Data riconsegna: {{ book[25] }}</span><br>
             <span>Biblioteca: {{ book[15] }}</span><br>
             <div class="dropdown-divider"></div>
-            {% if book[25] == 0 %}
+            {% if book[26] == 0 %}
                 <span class="stato-prestito-daritirare small">DA RITIRARE</span>
             {% endif %}
-            {% if book[25] == 1 %}
+            {% if book[26] == 1 %}
                 <span class="stato-prestito-dariconsegnare small">DA RICONSEGNARE</span>
             {% endif %}
-            {% if book[25] == 2 %}
+            {% if book[26] == 2 %}
                 <span class="stato-prestito-riconsegnato small">RICONSEGNATO</span>
             {% endif %}
             <form method="POST" class="annullaprenotazione mt-2">
-            <input type="hidden" name="idprestito" value="{{ book[20] }}">
-            <input type="submit" id="annullapr_{{ book[20] }}" class="small btn-annulla-prenotazione" value="ANNULLA PRENOTAZIONE">
+            <input type="hidden" name="idprestito" value="{{ book[21] }}">
+            <input type="submit" id="annullapr_{{ book[21] }}" class="small btn-annulla-prenotazione" value="ANNULLA PRENOTAZIONE">
             </form>
         </div>
     </div>

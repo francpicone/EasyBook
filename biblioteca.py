@@ -301,23 +301,32 @@ def prenota_aula():
             bibid = content['bibid']
 
             dbconn = mysql.connector.connect(**db.get_config())
+            cursor = dbconn.cursor()
 
             error = None
 
-            try:
-                cursor = dbconn.cursor()
-                q_prenota_posto = ('INSERT INTO `PRENOTAZIONI_POSTO`(`Id_prenotazione`, `Id_biblioteca_prenotazione`, `Utente`, `Data_prenotazione`) VALUES (%s,%s,%s,%s)')
-                cursor.execute(q_prenota_posto, (0, bibid, g.user[3], data))
-                dbconn.commit()
-                cursor.close()
-                dbconn.close()
+            q_controllo_prenotazione = ('SELECT UTENTE.CF, Id_prenotazione, BIBLIOTECA.Id_biblioteca FROM `PRENOTAZIONI_POSTO` JOIN UTENTE ON Utente = UTENTE.CF JOIN BIBLIOTECA ON Id_biblioteca_prenotazione = BIBLIOTECA.Id_biblioteca WHERE CF = %s AND Data_prenotazione = %s AND BIBLIOTECA.Id_biblioteca = %s')
+            cursor.execute(q_controllo_prenotazione, (g.user[3], data, bibid))
+            check = cursor.fetchone()
 
-            except:
-                error = 'E'' stato riscontrato un errore'
-                print(error)
+            if check is not None:
+                error = 'Prenotazione già effettuata in questa data per questa biblioteca.'
+                return jsonify(status="error",
+                               msg=error)
+            else:
+
+                try:
+                    q_prenota_posto = ('INSERT INTO `PRENOTAZIONI_POSTO`(`Id_prenotazione`, `Id_biblioteca_prenotazione`, `Utente`, `Data_prenotazione`) VALUES (%s,%s,%s,%s)')
+                    cursor.execute(q_prenota_posto, (0, bibid, g.user[3], data))
+                    dbconn.commit()
+                    cursor.close()
+                    dbconn.close()
+
+                except:
+                    error = 'E'' stato riscontrato un errore'
+                    print(error)
 
             if error is None:
-
                 return jsonify(status="ok")
 
 @bp.route('/prenotazioni', methods=('GET', 'POST'))

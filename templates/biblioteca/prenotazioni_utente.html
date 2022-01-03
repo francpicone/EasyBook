@@ -8,44 +8,27 @@
 <body>
 
 <div class="container-fluid u-page-title-container">
-    <h5>La tua libreria</h5>
+    <h5>Le tue prenotazioni</h5>
 </div>
 
-{% if books == [] %}
+{% if prenotazioni == [] %}
     <div class="container justify-content-center align-items-center text-center mt-100">
-        <h1>Ops! La tua libreria sembra essere vuota.</h1>
+        <h1>Ops! Sembra non esserci nessuna prenotazione.</h1>
         <img class="mt-5" src="../../static/resources/ops_img.png" width="196px">
     </div>
 {% endif %}
 
 <div class="container">
-    {% for book in books %}
+    {% for prenotazione in prenotazioni %}
     <div class="row book-row mt-3">
         <div class="col-auto">
-            <a href="/libro/{{ book[0] }}">
-            <img src="{{ book[7] }}" width="96px">
+            <a class="no-decoration" href="biblioteca/{{ prenotazione[4] }}">
+            <h5 class="red">{{ prenotazione[3] }}</h5>
             </a>
         </div>
         <div class="col-auto">
-            <h5>{{ book[4] }}</h5>
-            <span>ID prenotazione: {{ book[20] }}</span><br>
-            <span>Data prestito: {{ book[23] }}</span><br>
-            <span>Data riconsegna: {{ book[24] }}</span><br>
-            <span>Biblioteca: {{ book[15] }}</span><br>
-            <div class="dropdown-divider"></div>
-            {% if book[25] == 0 %}
-                <span class="stato-prestito-daritirare small">DA RITIRARE</span>
-            {% endif %}
-            {% if book[25] == 1 %}
-                <span class="stato-prestito-dariconsegnare small">DA RICONSEGNARE</span>
-            {% endif %}
-            {% if book[25] == 2 %}
-                <span class="stato-prestito-riconsegnato small">RICONSEGNATO</span>
-            {% endif %}
-            <form method="POST" class="annullaprenotazione mt-2">
-            <input type="hidden" name="idprestito" value="{{ book[20] }}">
-            <input type="submit" id="annullapr_{{ book[20] }}" class="small btn-annulla-prenotazione" value="ANNULLA PRENOTAZIONE">
-            </form>
+            <span>Prenotazione per il giorno: {{ prenotazione[2] }}</span><br>
+            <span>ID: {{ prenotazione[0] }}</span><br>
         </div>
     </div>
     {% endfor %}

@@ -1,0 +1,30 @@
+.u-page-title-container {
+    background-color: #CC0000;
+    color: white;
+    margin-top: 66px;
+    padding: 5px;
+    padding-left: 20px;
+}
+
+.red-button {
+    border: none;
+    outline: none;
+    background-color: #CC0000;
+    color: white;
+    border-radius: 0;
+    padding: 5px;
+
+}
+
+.datepicker {
+    border: 1px solid lightgray !important;
+    padding: 5px !important;
+}
+
+.red {
+    color: #CC0000;
+}
+
+.no-decoration {
+    text-decoration: none;
+}

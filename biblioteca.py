@@ -25,11 +25,14 @@ def posto_disponibile(bibid, data):
     cursor.execute(q_get_posti_prenotati, (bibid, data))
     c_posti_prenotati = cursor.fetchone()
 
-    if c_posti_totali[0] == 0:
-        return False
-    if c_posti_totali[0] - c_posti_prenotati[0] == 0:
-        return False
+    if c_posti_prenotati is None:
+        posti_disponibili = c_posti_totali[0]
     else:
+        posti_disponibili = c_posti_totali[0] - c_posti_prenotati[0]
+
+    if posti_disponibili == 0:
+        return False
+    elif posti_disponibili > 0:
         return True
 
 

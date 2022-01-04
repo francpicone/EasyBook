@@ -1,0 +1,8 @@
+{
+  "name": "EasyBook",
+  "short_name": "EasyBook",
+  "lang": "it-IT",
+  "start_url": "/",
+  "display": "standalone"
+}
+

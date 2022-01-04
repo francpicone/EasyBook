@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, g
+from flask import Flask, render_template, url_for, redirect, g, make_response, send_file
 from auth import login_required
 from flask_qrcode import QRcode
 import auth, db, Homepage, biblioteca
@@ -36,6 +36,15 @@ def get_profile():
     dbconn.close()
 
     return render_template('user.html', user=g.user, num_lib=num_lib_prestito, num_prenotazioni=num_prenotazioni)
+
+
+@app.route('/sw.js')
+def sw():
+    response = make_response(
+        send_file('static/js/sw.js'))
+    # change the content header file. Can also omit; flask will handle correctly.
+    response.headers['Content-Type'] = 'application/javascript'
+    return response
 
 
 if __name__ == '__main__':

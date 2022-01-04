@@ -1,0 +1,100 @@
+ {% include 'navbar.html' %}
+
+<head>
+    <link rel="stylesheet" href="../../static/css/register.css">
+    <link rel="stylesheet" href="../../static/css/bootstrap.css">
+    <link rel="stylesheet" href="../../static/css/bootstrap.css">
+    <link rel="stylesheet" href="../../static/css/bootstrap-grid.css">
+
+    <title>Entra a fare parte del mondo di EasyBook</title>
+</head>
+
+{% block body %}
+
+{% if inviato == False %}
+<div class="container-fluid h-100 p-2">
+    <div class="col h-100">
+        <div class="row justify-content-left h-100">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <header class="card-header">
+                        <h4 class="card-title mt-2">Compila i dati, e invia la richiesta.</h4>
+                    </header>
+                    <article class="card-body">
+                    <form method="POST">
+                        <div class="form-row">
+                            <div class="col form-group mb-1">
+                                <label>Nome Biblioteca </label>
+                                <input name="nomebib" type="text" class="form-control" placeholder="">
+                            </div> <!-- form-group end.// -->
+                            <div class="col form-group mb-1">
+                                <label>Indirizzo</label>
+                                <input name="indirizzobib" type="text" class="form-control" placeholder="">
+                            </div>
+                            <div class="col form-group mb-1">
+                                <label>Numero di telefono</label>
+                                <input name="numtelbib" type="text" class="form-control" placeholder="">
+                            </div><!-- form-group end.// -->
+                        </div><!-- form-row end.// -->
+                        <h5 class="mt-2 mb-2">Informazioni sul titolare</h5>
+                        <div class="form-group mb-3">
+                            <label>Nome</label>
+                            <input name="nometitolare" type="email" class="form-control" placeholder="">
+                            <label>Cognome</label>
+                            <input name="cognometitolare" type="email" class="form-control" placeholder="">
+                            <label>Email</label>
+                            <input name="emailtitolare" type="email" class="form-control" placeholder="">
+                            <small class="form-text text-muted">Non condivideremo con nessuno la tua email.</small><br>
+                            <label>Numero di telefono</label>
+                            <input name="numteltitolare" type="email" class="form-control" placeholder="">
+                        </div> <!-- form-group end.// -->
+                        <div class="form-group mb-3">
+                            <label>Sesso</label><br>
+                            <label class="form-check form-check-inline">
+                                <input name="uomo" class="form-check-input" type="radio" name="gender" value="option1">
+                                <span class="form-check-label"> Uomo </span>
+                            </label>
+                            <label class="form-check form-check-inline">
+                                <input name="donna" class="form-check-input" type="radio" name="gender" value="option2">
+                                <span class="form-check-label"> Donna</span>
+                            </label>
+                        </div>
+                        <div class="form-group mb-1">
+                            <label>Data di nascita</label>
+                            <input name="datadinascita" class="form-control" type="date">
+                        </div><!-- form-group end.// -->
+                        <div class="form-row mb-1">
+                            <div class="form-group col-md-6">
+                                <label>Citta'</label>
+                                <input name="citta" type="text" class="form-control">
+                            </div> <!-- form-group end.// -->
+                            <div class="form-group col-md-6 mb-1">
+                                <label>Nazione</label>
+                                <select name="nazione" id="inputState" class="form-control">
+                                    <option>Italia</option>
+                                </select>
+                            </div> <!-- form-group end.// -->
+                        </div> <!-- form-row.// -->
+                        <div class="form-group mb-1">
+                            <button type="submit" id="send_request" class="btn btn-primary btn-block"> Invia la richiesta</button>
+                        </div> <!-- form-group// -->
+                        <small class="text-muted">Inviando la richiesta confermi di accettare i nostri <br> Termini di utilizzo e Privacy Policy.</small>
+                    </form>
+                </article> <!-- card-body end .// -->
+                <div class="border-top card-body text-center">Hai un account ? <a href="">Accedi</a></div>
+            </div> <!-- card.// -->
+        </div> <!-- col.//-->
+    </div> <!-- row.//-->
+</div> <!-- col principale-->
+</div> <!-- container.// -->
+{% endif %}
+
+{% if inviato == True %}
+    <div class="container d-flex w-100 h-100">
+        <div class="row w-100 h-100 text-center d-flex justify-content-center align-items-center">
+         <h1 class="red u-mt-100">Richiesta inviata !</h1>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

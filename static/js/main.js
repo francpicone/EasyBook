@@ -1,5 +1,4 @@
 $(function() {
-
 	if ( $('.owl-2').length > 0 ) {
         $('.owl-2').owlCarousel({
             center: false,
@@ -27,5 +26,6 @@ $(function() {
             }
         });            
     }
-
 })
+
+

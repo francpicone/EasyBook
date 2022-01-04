@@ -203,3 +203,28 @@ def reimposta_pw():
             dbconn.close()
 
             return jsonify(status='Success')
+
+
+@bp.route('/richiediregistrazione', methods=('GET', 'POST'))
+def richiedi_registrazione_biblioteca():
+
+    inviato = False
+
+    if request.method == 'POST':
+        nome_biblioteca = request.form['nomebib']
+        indirizzo_biblioteca = request.form['indirizzobib']
+        numero_tel_biblioteca = request.form['numtelbib']
+
+        nome_titolare = request.form['nometitolare']
+        cognome_titolare = request.form['cognometitolare']
+        email_titolare = request.form['emailtitolare']
+        numero_tel_titolare = request.form['numteltitolare']
+        data_di_nascita_titolare = request.form['datadinascita']
+        citta_titolare = request.form['citta']
+        nazione_titolare = request.form['nazione']
+
+        inviato = True
+
+        return render_template('auth/register_biblioteca.html', inviato=inviato)
+
+    return render_template('auth/register_biblioteca.html', inviato=inviato)

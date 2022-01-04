@@ -41,3 +41,15 @@
 .book-descr-title {
     color: #CC0000;
 }
+
+.stato-prenotazione-scaduta {
+    padding: 3px;
+    background-color: red;
+    color: white;
+}
+
+.stato-prenotazione-attiva {
+    padding: 3px;
+    background-color: mediumseagreen;
+    color: white;
+}

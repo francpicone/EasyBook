@@ -1,11 +1,12 @@
  {% include 'navbar.html' %}
 
-<head>
+{% block head %}
     <meta charset="UTF-8">
     <title>La tua libreria</title>
     <link rel="stylesheet" href="../../static/css/libreria_utente.css">
-</head>
-<body>
+{% endblock %}
+
+{% block body %}
 
 <div class="container-fluid u-page-title-container">
     <h5>La tua libreria</h5>
@@ -23,7 +24,7 @@
     <div class="row book-row mt-3">
         <div class="col-auto">
             <a href="/libro/{{ book[0] }}">
-            <img src="{{ book[7] }}" width="96px">
+            <img src="{{ book[7] }}" height="132px">
             </a>
         </div>
         <div class="col-auto">
@@ -84,4 +85,4 @@ $('.annullaprenotazione').submit(function(e) {
 });
 </script>
 
-</body>
+{% endblock %}

@@ -52,6 +52,20 @@ html,body {
     height: 380px;
 }
 
+.carousel-card-esplora  {
+    background-color: white !important;
+    padding: 20px;
+    width: 250px;
+    height: 280px;
+}
+
+.carousel-card-bib  {
+    background-color: white !important;
+    padding: 20px;
+    width: 250px;
+    height: 180px;
+}
+
 .book-descr {
     color: gray;
 }
@@ -61,7 +75,11 @@ html,body {
 }
 
 .book-carousel-image {
-    width: 96px;
+    height: 132px;
+}
+
+.book-carousel-image-mini {
+    width: 64px;
 }
 
 .mt-50 {

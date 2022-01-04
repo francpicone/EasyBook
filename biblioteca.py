@@ -10,6 +10,29 @@ import mysql.connector
 
 bp = Blueprint('biblioteca', __name__)
 
+def posto_disponibile(bibid, data):
+
+    dbconn = mysql.connector.connect(**db.get_config())
+    cursor = dbconn.cursor()
+
+    q_get_posti_totali = 'SELECT Posti_aula_studio FROM BIBLIOTECA WHERE Id_biblioteca = %s'
+    cursor.execute(q_get_posti_totali, (bibid,))
+    c_posti_totali = cursor.fetchone()
+
+    print(c_posti_totali[0])
+
+    q_get_posti_prenotati = 'SELECT COUNT(Id_prenotazione) as NumeroPrenotazioni, BIBLIOTECA.Nome AS NomeBiblioteca FROM PRENOTAZIONI_POSTO JOIN BIBLIOTECA ON Id_biblioteca_prenotazione = BIBLIOTECA.Id_biblioteca WHERE BIBLIOTECA.Id_Biblioteca = %s AND Data_prenotazione = %s GROUP BY PRENOTAZIONI_POSTO.Id_biblioteca_prenotazione'
+    cursor.execute(q_get_posti_prenotati, (bibid, data))
+    c_posti_prenotati = cursor.fetchone()
+
+    if c_posti_totali[0] == 0:
+        return False
+    if c_posti_totali[0] - c_posti_prenotati[0] == 0:
+        return False
+    else:
+        return True
+
+
 
 @bp.route('/libro/<bookid>')
 @auth.login_required
@@ -65,7 +88,7 @@ def get_biblioteca(bibid):
         cursor.execute(q_get_biblioteca, (bibid,))
         bib = cursor.fetchone()
 
-       # q_get_posti_totali = 'SELECT COUNT(Id_posto) as NumeroPostiDisponibili, BIBLIOTECA.Nome as Biblioteca, Disponibile FROM POSTO JOIN BIBLIOTECA ON Id_biblioteca_posto = BIBLIOTECA.Id_biblioteca WHERE BIBLIOTECA.Id_biblioteca = %s GROUP BY Id_posto'
+        # q_get_posti_totali = 'SELECT COUNT(Id_posto) as NumeroPostiDisponibili, BIBLIOTECA.Nome as Biblioteca, Disponibile FROM POSTO JOIN BIBLIOTECA ON Id_biblioteca_posto = BIBLIOTECA.Id_biblioteca WHERE BIBLIOTECA.Id_biblioteca = %s GROUP BY Id_posto'
         q_get_posti_totali = 'SELECT Posti_aula_studio FROM BIBLIOTECA WHERE Id_biblioteca = %s'
         cursor.execute(q_get_posti_totali, (bibid,))
         c_posti_totali = cursor.fetchone()
@@ -112,7 +135,7 @@ def check_posti_disponibili():
             dbconn = mysql.connector.connect(**db.get_config())
             cursor = dbconn.cursor()
 
-           # q_get_posti_totali = 'SELECT COUNT(Id_posto) as NumeroPostiDisponibili, BIBLIOTECA.Nome as Biblioteca, Disponibile FROM POSTO JOIN BIBLIOTECA ON Id_biblioteca_posto = BIBLIOTECA.Id_biblioteca WHERE BIBLIOTECA.Id_biblioteca = %s GROUP BY Id_posto'
+            # q_get_posti_totali = 'SELECT COUNT(Id_posto) as NumeroPostiDisponibili, BIBLIOTECA.Nome as Biblioteca, Disponibile FROM POSTO JOIN BIBLIOTECA ON Id_biblioteca_posto = BIBLIOTECA.Id_biblioteca WHERE BIBLIOTECA.Id_biblioteca = %s GROUP BY Id_posto'
             q_get_posti_totali = 'SELECT Posti_aula_studio FROM BIBLIOTECA WHERE Id_biblioteca = %s'
             cursor.execute(q_get_posti_totali, (bibid,))
             c_posti_totali = cursor.fetchone()
@@ -286,59 +309,115 @@ def search():
             cursor.execute(q_search_biblioteche, (data, data))
             results_biblioteche = cursor.fetchall()
 
-            return render_template('biblioteca/search_results.html', results_libri=results_libri, results_biblioteche=results_biblioteche)
+            return render_template('biblioteca/search_results.html', results_libri=results_libri,
+                                   results_biblioteche=results_biblioteche)
 
         except:
             error = 'E'' stato riscontrato un errore'
             print(error)
 
+
 @bp.route('/prenotaaula', methods=('GET', 'POST'))
 @auth.login_required
 def prenota_aula():
-        if request.method == 'POST':
-            content = request.get_json()
-            data = content['data']
-            bibid = content['bibid']
+    if request.method == 'POST':
+        content = request.get_json()
+        data = content['data']
+        bibid = content['bibid']
 
-            dbconn = mysql.connector.connect(**db.get_config())
-            cursor = dbconn.cursor()
+        dbconn = mysql.connector.connect(**db.get_config())
+        cursor = dbconn.cursor()
 
-            error = None
+        error = None
 
-            q_controllo_prenotazione = ('SELECT UTENTE.CF, Id_prenotazione, BIBLIOTECA.Id_biblioteca FROM `PRENOTAZIONI_POSTO` JOIN UTENTE ON Utente = UTENTE.CF JOIN BIBLIOTECA ON Id_biblioteca_prenotazione = BIBLIOTECA.Id_biblioteca WHERE CF = %s AND Data_prenotazione = %s AND BIBLIOTECA.Id_biblioteca = %s')
-            cursor.execute(q_controllo_prenotazione, (g.user[3], data, bibid))
-            check = cursor.fetchone()
+        #Controllo che l'utente non è già prenotato per quella data in quella biblioteca
+        q_controllo_prenotazione = (
+            'SELECT UTENTE.CF, Id_prenotazione, BIBLIOTECA.Id_biblioteca FROM `PRENOTAZIONI_POSTO` JOIN UTENTE ON Utente = UTENTE.CF JOIN BIBLIOTECA ON Id_biblioteca_prenotazione = BIBLIOTECA.Id_biblioteca WHERE CF = %s AND Data_prenotazione = %s AND BIBLIOTECA.Id_biblioteca = %s')
+        cursor.execute(q_controllo_prenotazione, (g.user[3], data, bibid))
+        check = cursor.fetchone()
 
-            if check is not None:
-                error = 'Prenotazione già effettuata in questa data per questa biblioteca.'
-                return jsonify(status="error",
-                               msg=error)
-            else:
+        if check is not None:
+            error = 'Prenotazione già effettuata in questa data per questa biblioteca.'
+            return jsonify(status="error",
+                           msg=error)
 
-                try:
-                    q_prenota_posto = ('INSERT INTO `PRENOTAZIONI_POSTO`(`Id_prenotazione`, `Id_biblioteca_prenotazione`, `Utente`, `Data_prenotazione`) VALUES (%s,%s,%s,%s)')
-                    cursor.execute(q_prenota_posto, (0, bibid, g.user[3], data))
-                    dbconn.commit()
-                    cursor.close()
-                    dbconn.close()
 
-                except:
-                    error = 'E'' stato riscontrato un errore'
-                    print(error)
 
-            if error is None:
-                return jsonify(status="ok")
+        elif posto_disponibile(bibid, data) is False:
+            return jsonify(status="error",
+                           msg="Nessun posto disponibile per questa data in questa biblioteca.")
+
+        else:
+
+            try:
+                q_prenota_posto = (
+                    'INSERT INTO `PRENOTAZIONI_POSTO`(`Id_prenotazione`, `Id_biblioteca_prenotazione`, `Utente`, `Data_prenotazione`) VALUES (%s,%s,%s,%s)')
+                cursor.execute(q_prenota_posto, (0, bibid, g.user[3], data))
+                dbconn.commit()
+                cursor.close()
+                dbconn.close()
+
+            except:
+                error = 'E'' stato riscontrato un errore'
+                print(error)
+
+        if error is None:
+            return jsonify(status="ok")
+
+
+@bp.route('/annulla-prenotazione-aula', methods=('GET', 'POST'))
+@auth.login_required
+def annulla_prenotazione_aula():
+    prenotazione = request.form['idprenotazione']
+
+    error = None
+
+    dbconn = mysql.connector.connect(**db.get_config())
+    cursor = dbconn.cursor()
+    q_annulla_prenotazione_aula = 'DELETE FROM `PRENOTAZIONI_POSTO` WHERE Id_prenotazione = %s AND Utente = %s'
+
+    try:
+        cursor.execute(q_annulla_prenotazione_aula, (prenotazione, g.user[3]))
+        dbconn.commit()
+        cursor.close()
+        dbconn.close()
+    except:
+        error = 'E'' stato riscontrato un errore'
+        print(error)
+
+    if error is None:
+        return jsonify(status='ok',
+                       IDPrenotazione=prenotazione)
+
 
 @bp.route('/prenotazioni', methods=('GET', 'POST'))
 @auth.login_required
 def get_prenotazioni():
-
     dbconn = mysql.connector.connect(**db.get_config())
     cursor = dbconn.cursor()
 
     q_get_prenotazioni = 'SELECT Id_prenotazione, UTENTE.CF, Data_prenotazione, BIBLIOTECA.Nome, BIBLIOTECA.Id_biblioteca FROM PRENOTAZIONI_POSTO JOIN UTENTE ON Utente = UTENTE.CF JOIN BIBLIOTECA ON Id_biblioteca_prenotazione = BIBLIOTECA.Id_biblioteca WHERE UTENTE.CF = %s'
 
-    cursor.execute(q_get_prenotazioni, (g.user[3], ))
+    cursor.execute(q_get_prenotazioni, (g.user[3],))
     prenotazioni = cursor.fetchall()
 
-    return render_template('biblioteca/prenotazioni_utente.html', prenotazioni=prenotazioni)
+    today = date.today()
+
+    return render_template('biblioteca/prenotazioni_utente.html', prenotazioni=prenotazioni, today=today)
+
+
+@bp.route('/esplora')
+@auth.login_required
+def get_pagina_esplora():
+    dbconn = mysql.connector.connect(**db.get_config())
+    cursor = dbconn.cursor()
+
+    get_books = 'SELECT * FROM LIBRO JOIN AUTORE ON autore_lib = AUTORE.id_aut JOIN GENERE ON genere_lib = GENERE.id_genere'
+    cursor.execute(get_books)
+    libri = cursor.fetchall()
+
+    get_biblioteche = ('SELECT * FROM BIBLIOTECA')
+    cursor.execute(get_biblioteche)
+    biblioteche = cursor.fetchall()
+
+    return render_template('esplora.html', books=libri, biblioteche=biblioteche)

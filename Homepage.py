@@ -13,8 +13,7 @@ def index():
 
         dbconn = mysql.connector.connect(**db.get_config())
         cursor = dbconn.cursor()
-        get_books = 'SELECT * FROM LIBRO'
-        data = ()
+        get_books = 'SELECT * FROM LIBRO JOIN AUTORE ON autore_lib = AUTORE.id_aut JOIN GENERE ON genere_lib = GENERE.id_genere'
         cursor.execute(get_books)
         libri = cursor.fetchall()
 

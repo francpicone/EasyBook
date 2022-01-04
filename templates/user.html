@@ -20,10 +20,10 @@
 
 <div class="header-user px-4 pt-5 pb-4 cover">
     <div class="media align-items-end profile-head">
-        <div class="profile mr-3"><img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80" alt="..." width="130" class="rounded mb-2 img-thumbnail"></div>
+        <div class="profile mr-3"><img src="../static/resources/user-no-image.jpg" alt="..." width="130px" class="mb-2 img-thumbnail"></div>
         <div class="media-body mb-5">
             <h4 class="mt-0 mb-0">{{ user[0] }} {{ user[1] }}</h4>
-            <p class="small mb-4"> <i class="fas fa-map-marker-alt mr-2"></i>New York</p>
+            <p class="small mb-4">{{ g.user[8] }}</p>
         </div>
     </div>
 </div>
@@ -45,7 +45,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-calendar2-check-fill" viewBox="0 0 16 16">
                  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zm9.954 3H2.545c-.3 0-.545.224-.545.5v1c0 .276.244.5.545.5h10.91c.3 0 .545-.224.545-.5v-1c0-.276-.244-.5-.546-.5zm-2.6 5.854a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
                 </svg>
-                <span class="user-stats-info">Posti in aula prenotati: 0</span>
+             <a href="{{ url_for('biblioteca.get_prenotazioni') }}"><span class="user-stats-info">Posti in aula prenotati: {{ num_prenotazioni[0] }}</span></a>
                 <div class="dropdown-divider"></div>
          </div>
          <div class=" user-settings col-md mobile-mt-30">

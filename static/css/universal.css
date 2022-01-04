@@ -28,3 +28,7 @@
 .no-decoration {
     text-decoration: none;
 }
+
+.owl-2-style .owl-dots .owl-dot.active span {
+    background: #cc0000 !important;
+}

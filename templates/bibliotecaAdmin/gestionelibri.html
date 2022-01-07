@@ -1,0 +1,72 @@
+{% include 'navbar.html' %}
+{% block head %}
+    <meta charset="UTF-8">
+    <title>Gestione libri</title>
+    <link rel="stylesheet" href="../../static/css/gestionelibri.css">
+{% endblock %}
+{% block body %}
+<body>
+
+<div class="container-fluid u-page-title-container">
+    <h5>Gestione libri</h5>
+</div>
+
+<div class="container u-mt-50">
+    <div class="row">
+        <div class="col">
+            <button class="red-button"><svg style="margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
+            </svg><span style="vertical-align: middle;">AGGIUNGI LIBRO</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+{% if libri_biblioteca == [] %}
+    <div class="container justify-content-center align-items-center text-center">
+        <h1>Ops! Il tuo inventario sembra essere vuoto.</h1>
+        <img class="mt-5" src="../../static/resources/ops_img.png" width="196px">
+    </div>
+{% endif %}
+
+<!--
+0 count(LIBRO.ISBN)
+1 ISBN
+2 titolo
+3 edizione
+4 copertina
+5 nome aut
+6 cognome aut
+7 nome edit
+-->
+
+<div class="container">
+    {% for book in libri_biblioteca %}
+    <div class="row book-row mt-3">
+        <div class="col-auto">
+            <a href="/libro/{{ book[1] }}">
+            <img src="{{ book[4] }}" height="132px">
+            </a>
+        </div>
+        <div class="col-auto">
+            <h5>{{ book[2] }}</h5>
+            <div class="dropdown-divider"></div>
+            <span class="book-descr-title small">ISBN:</span> <span class="book-descr small">{{ book[1] }}</span><br>
+            <span class="book-descr-title small">Autore(i):</span> <span class="book-descr small">{{ book[5] }}&nbsp;{{ book[6] }}</span><br>
+            <span class="book-descr-title small">Edizione:</span> <span class="book-descr small">{{ book[3] }}</span><br>
+            <span class="book-descr-title small">Editore:</span> <span class="book-descr small">{{ book[7] }}</span><br>
+            <span class="book-descr-title small">Quantità totale:</span> <span class="book-descr small">{{ book[0] }}</span><br>
+              <span class="book-descr-title small">Quantità disponibile:</span> <span class="book-descr small">{{ book[0] }}</span><br>
+            <form method="POST" class="annullaprenotazione mt-2">
+                <button class="red-button small"><svg style="margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                    </svg><span style="vertical-align: middle;">MODIFICA</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+{% endblock %}

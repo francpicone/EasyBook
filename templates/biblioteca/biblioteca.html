@@ -15,6 +15,7 @@
      <div class="mt-3" id="map" style="height: 300px; width: 100%;"></div>
 </div>
 
+{% if g.user[10] == None %}
 <div class="container">
     <h5 class="mt-3 mb-3 red">Prenota un posto in aula studio</h5>
     <div class="dropdown-divider"></div>
@@ -33,6 +34,7 @@
     <span style="font-size: 1.2rem;">posto disponibile</span>
     {% endif %}
 </div>
+{% endif %}
 
 
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>

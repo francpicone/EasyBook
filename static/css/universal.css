@@ -16,6 +16,10 @@
 
 }
 
+.red-button:hover {
+    background-color: #bb0000;
+}
+
 .datepicker {
     border: 1px solid lightgray !important;
     padding: 5px !important;
@@ -39,4 +43,8 @@
 
 .u-mt-100 {
     margin-top: 100px !important;
+}
+
+.u-mt-90 {
+    margin-top: 90px !important;
 }

@@ -29,8 +29,13 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="{{ url_for('get_profile') }}">Il tuo Profilo</a>
+          {% if g.user[10] == None %}
           <a class="dropdown-item" href="{{ url_for('biblioteca.get_libreria') }}">La tua libreria</a>
           <a class="dropdown-item" href="{{ url_for('biblioteca.get_prenotazioni') }}">Le tue prenotazioni</a>
+          {% endif %}
+          {% if g.user[10] != None %}
+          <a class="dropdown-item" href="{{ url_for('home.dashboard') }}">Dashboard</a>
+          {% endif %}
           <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
         </div>
       </li>

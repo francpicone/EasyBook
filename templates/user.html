@@ -30,11 +30,14 @@
 
 <div class="container-fluid mt-160 ps-4 pe-4">
     <div class="row center-mobile">
+        {% if g.user[10] == None %}
         <div class="col-auto">
                 <div class="qr-container">
                     <img src="{{ qrcode(g.user[9]) }}" width="198px">
                 </div>
         </div>
+        {% endif %}
+        {% if g.user[10] == None %}
          <div class="user-settings col-md mobile-mt-30">
                 <h3>Il tuo rank : 116.75</h3>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-book-fill" viewBox="0 0 16 16">
@@ -48,6 +51,7 @@
              <a href="{{ url_for('biblioteca.get_prenotazioni') }}"><span class="user-stats-info">Posti in aula prenotati: {{ num_prenotazioni[0] }}</span></a>
                 <div class="dropdown-divider"></div>
          </div>
+        {% endif %}
          <div class=" user-settings col-md mobile-mt-30">
              <h3>Impostazioni</h3>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-asterisk" viewBox="0 0 16 16">
@@ -55,6 +59,12 @@
                 </svg>
                 <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><span class="user-stats-info">Reimposta password</span></a>
                 <div class="dropdown-divider"></div>
+                {% if g.user[10] != None %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#CC0000" class="bi bi-asterisk" viewBox="0 0 16 16">
+                    <path d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z"/>
+                </svg>
+                <a data-bs-toggle="modal" data-bs-target="#postiaulaModal" href="#"><span class="user-stats-info">Impostazioni aula studio</span></a>
+                {% endif %}
          </div>
     </div>
 </div>
@@ -89,6 +99,30 @@
     </div>
   </div>
 
+<!-- Modal modifica posti aula -->
+{% if g.user[10] != None %}
+<div class="modal fade" id="postiaulaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Impostazioni aula studio</h5>
+          <button type="button" class="close close-modal" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+           <form id="setnumposti" method="POST"  action="{{ url_for('biblioteca.set_num_posti') }}">
+              <label for="vecchia-pw">Posti totali in aula</label>
+              <input class="mt-1 mb-2 form-control form-control-lg" type="number" id="posti-tot-aula" name="posti-tot-aula" value="{{ num_posti_aula }}"><br>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+              <button id="salvanumposti" type="submit" class="btn btn-primary btn-red">Salva</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
 <script>
 
     // Attach a submit handler to the form
@@ -121,6 +155,33 @@ $('#changepw').submit(function(e) {
         }
     });
 });
+
+{% if g.user[10] != None %}
+$('#setnumposti').submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        url: '{{ url_for('biblioteca.set_num_posti') }}',
+        data: $(this).serialize(),
+        type: 'POST',
+        success: function(data) {
+
+            if (data.status === 'ok'){
+                document.getElementById('salvanumposti').style.backgroundColor = 'lightgray'
+                document.getElementById('salvanumposti').style.color = 'gray'
+                document.getElementById('salvanumposti').innerText = 'Salvato'
+            }
+
+            if (data.status === 'error'){
+                alert('Errore durante il salvataggio dei dati.')
+            }
+
+
+
+
+        }
+    });
+});
+{% endif %}
     </script>
 
 </body>

@@ -1,0 +1,82 @@
+.widget {
+    background-color: #e7e7e7;
+    padding: 10px;
+    width: 250px;
+    min-width: 250px;
+}
+
+.dashboard-stats-container {
+    background-color: whitesmoke;
+    width: 100%;
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid lightgray;
+}
+
+.dashboard-leftbar {
+    border-right: 1px solid lightgray;
+    background-color: whitesmoke;
+    padding: 10px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.btn-leftbar {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    padding: 5px;
+    color: black;
+}
+
+.btn-leftbar:hover {
+    color: #cc0000;
+}
+
+.dashboard-colonna-libri-sx {
+    border-right: 1px solid lightgray;
+    padding: 10px;
+}
+
+.dashboard-colonna-libri-dx {
+    padding: 10px;
+}
+
+.stato-prestito-daritirare {
+    padding: 3px;
+    background-color: dodgerblue;
+    color: white;
+}
+
+.stato-prestito-riconsegnato {
+    padding: 3px;
+    background-color: green;
+    color: white;
+}
+
+.stato-prestito-dariconsegnare {
+    padding: 3px;
+    background-color: red;
+    color: white;
+}
+
+@media only screen and (max-width: 480px) {
+    .dashboard-leftbar {
+    border-right: none;
+    width: 100%;
+}
+
+.dashboard-colonna-libri-sx {
+    border-right: none;
+    width: 100% !important;
+    min-width: 100%;
+}
+
+.dashboard-colonna-libri-dx {
+    width: 100% !important;
+    min-width: 100%;
+}
+
+}

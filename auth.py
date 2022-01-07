@@ -131,7 +131,11 @@ def login():
             if error is None:
                 session.clear()
                 session['CF'] = user[3]
-                return redirect(url_for('home.index'))
+
+                if user[10] is not None:
+                    return redirect(url_for('home.dashboard'))
+                else:
+                    return redirect(url_for('home.index'))
 
     if g.user is None:
         return render_template('auth/login.html', err=error)

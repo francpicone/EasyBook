@@ -173,18 +173,23 @@ def check_posti_disponibili():
 @bp.route('/libreria')
 @auth.login_required
 def get_libreria():
-    dbconn = mysql.connector.connect(**db.get_config())
-    cursor = dbconn.cursor()
 
-    q_get_libreria = (
-        'SELECT * FROM LIBRO join COPIA_LIBRO ON COPIA_LIBRO.isbn = LIBRO.ISBN join BIBLIOTECA ON BIBLIOTECA.Id_biblioteca = COPIA_LIBRO.id_bibl_copia join PRENDE_IN_PRESTITO on PRENDE_IN_PRESTITO.num_copia_prestito=COPIA_LIBRO.num_copia join UTENTE on PRENDE_IN_PRESTITO.codice_fiscale=UTENTE.CF WHERE CF = %s')
-    cursor.execute(q_get_libreria, (g.user[3],))
-    libreria = cursor.fetchall()
+    if g.user[10] is None:
+        dbconn = mysql.connector.connect(**db.get_config())
+        cursor = dbconn.cursor()
 
-    cursor.close()
-    dbconn.close()
+        q_get_libreria = (
+            'SELECT * FROM LIBRO join COPIA_LIBRO ON COPIA_LIBRO.isbn = LIBRO.ISBN join BIBLIOTECA ON BIBLIOTECA.Id_biblioteca = COPIA_LIBRO.id_bibl_copia join PRENDE_IN_PRESTITO on PRENDE_IN_PRESTITO.num_copia_prestito=COPIA_LIBRO.num_copia join UTENTE on PRENDE_IN_PRESTITO.codice_fiscale=UTENTE.CF WHERE CF = %s')
+        cursor.execute(q_get_libreria, (g.user[3],))
+        libreria = cursor.fetchall()
 
-    return render_template('biblioteca/libreria_utente.html', books=libreria)
+        cursor.close()
+        dbconn.close()
+
+        return render_template('biblioteca/libreria_utente.html', books=libreria)
+
+    else:
+        return redirect(url_for('home.dashboard'))
 
 
 @bp.route('/prenota', methods=('GET', 'POST'))
@@ -195,6 +200,11 @@ def prenota_libro():
         isbn = request.form['isbn']
 
         error = None
+
+        #Controllo che l'utente non sia una biblioteca
+        if g.user[10] is not None:
+            return jsonify(status="error",
+                           msg="Accesso negato alla seguente funzionalità.")
 
         dbconn = mysql.connector.connect(**db.get_config())
 
@@ -254,6 +264,11 @@ def annulla_prenotazione():
         IDPrestito = request.form['idprestito']
 
         error = None
+
+        # Controllo che l'utente non sia una biblioteca
+        if g.user[10] is not None:
+            return jsonify(status="error",
+                           msg="Accesso negato alla seguente funzionalità.")
 
         q_get_libreria = (
             'SELECT * FROM LIBRO join COPIA_LIBRO ON COPIA_LIBRO.isbn = LIBRO.ISBN join BIBLIOTECA ON BIBLIOTECA.Id_biblioteca = COPIA_LIBRO.id_bibl_copia join PRENDE_IN_PRESTITO on PRENDE_IN_PRESTITO.num_copia_prestito=COPIA_LIBRO.num_copia join UTENTE on PRENDE_IN_PRESTITO.codice_fiscale=UTENTE.CF WHERE CF = %s AND Id_prestito = %s')
@@ -333,6 +348,11 @@ def prenota_aula():
 
         error = None
 
+        # Controllo che l'utente non sia una biblioteca
+        if g.user[10] is not None:
+            return jsonify(status="error",
+                           msg="Accesso negato alla seguente funzionalità.")
+
         #Controllo che l'utente non è già prenotato per quella data in quella biblioteca
         q_controllo_prenotazione = (
             'SELECT UTENTE.CF, Id_prenotazione, BIBLIOTECA.Id_biblioteca FROM `PRENOTAZIONI_POSTO` JOIN UTENTE ON Utente = UTENTE.CF JOIN BIBLIOTECA ON Id_biblioteca_prenotazione = BIBLIOTECA.Id_biblioteca WHERE CF = %s AND Data_prenotazione = %s AND BIBLIOTECA.Id_biblioteca = %s')
@@ -375,6 +395,11 @@ def annulla_prenotazione_aula():
 
     error = None
 
+    # Controllo che l'utente non sia una biblioteca
+    if g.user[10] is not None:
+        return jsonify(status="error",
+                       msg="Accesso negato alla seguente funzionalità.")
+
     dbconn = mysql.connector.connect(**db.get_config())
     cursor = dbconn.cursor()
     q_annulla_prenotazione_aula = 'DELETE FROM `PRENOTAZIONI_POSTO` WHERE Id_prenotazione = %s AND Utente = %s'
@@ -396,18 +421,23 @@ def annulla_prenotazione_aula():
 @bp.route('/prenotazioni', methods=('GET', 'POST'))
 @auth.login_required
 def get_prenotazioni():
-    dbconn = mysql.connector.connect(**db.get_config())
-    cursor = dbconn.cursor()
 
-    q_get_prenotazioni = 'SELECT Id_prenotazione, UTENTE.CF, Data_prenotazione, BIBLIOTECA.Nome, BIBLIOTECA.Id_biblioteca FROM PRENOTAZIONI_POSTO JOIN UTENTE ON Utente = UTENTE.CF JOIN BIBLIOTECA ON Id_biblioteca_prenotazione = BIBLIOTECA.Id_biblioteca WHERE UTENTE.CF = %s'
+    if g.user[10] is None:
 
-    cursor.execute(q_get_prenotazioni, (g.user[3],))
-    prenotazioni = cursor.fetchall()
+        dbconn = mysql.connector.connect(**db.get_config())
+        cursor = dbconn.cursor()
 
-    today = date.today()
+        q_get_prenotazioni = 'SELECT Id_prenotazione, UTENTE.CF, Data_prenotazione, BIBLIOTECA.Nome, BIBLIOTECA.Id_biblioteca FROM PRENOTAZIONI_POSTO JOIN UTENTE ON Utente = UTENTE.CF JOIN BIBLIOTECA ON Id_biblioteca_prenotazione = BIBLIOTECA.Id_biblioteca WHERE UTENTE.CF = %s'
 
-    return render_template('biblioteca/prenotazioni_utente.html', prenotazioni=prenotazioni, today=today)
+        cursor.execute(q_get_prenotazioni, (g.user[3],))
+        prenotazioni = cursor.fetchall()
 
+        today = date.today()
+
+        return render_template('biblioteca/prenotazioni_utente.html', prenotazioni=prenotazioni, today=today)
+
+    else:
+        return redirect(url_for('home.dashboard'))
 
 @bp.route('/esplora')
 @auth.login_required
@@ -424,3 +454,47 @@ def get_pagina_esplora():
     biblioteche = cursor.fetchall()
 
     return render_template('esplora.html', books=libri, biblioteche=biblioteche)
+
+@bp.route('/cambianumposti', methods=('GET', 'POST'))
+@auth.login_required
+def set_num_posti():
+    if request.method == 'POST':
+        num_posti_aula = request.form['posti-tot-aula']
+
+        error = None
+
+        dbconn = mysql.connector.connect(**db.get_config())
+        cursor = dbconn.cursor()
+
+        try:
+            q_set_num_posti_aula = 'UPDATE `BIBLIOTECA` SET `Posti_aula_studio`= %s WHERE Id_biblioteca = %s'
+            cursor.execute(q_set_num_posti_aula, (num_posti_aula, g.user[10], ))
+            dbconn.commit()
+            cursor.close()
+            dbconn.close()
+
+        except:
+            error = 'E'' stato riscontrato un errore'
+
+        if error is None:
+            return jsonify(status="ok")
+        else:
+            return jsonify(status="error")
+
+@bp.route('/gestionelibri')
+@auth.login_required
+def gestione_libri():
+
+    if g.user[10] is None:
+        return redirect(url_for('home.index'))
+
+    else:
+
+        dbconn=mysql.connector.connect(**db.get_config())
+        cursor = dbconn.cursor()
+        q_get_libri_biblioteca = 'SELECT count(LIBRO.ISBN), LIBRO.ISBN, titolo, edizione, copertina, AUTORE.nome, AUTORE.cognome, EDITORE.nome FROM LIBRO join COPIA_LIBRO on COPIA_LIBRO.isbn=LIBRO.ISBN JOIN BIBLIOTECA ON COPIA_LIBRO.id_bibl_copia=BIBLIOTECA.Id_biblioteca JOIN AUTORE ON autore_lib = AUTORE.id_aut JOIN EDITORE ON editore_lib = EDITORE.id_editore where Id_biblioteca=%s GROUP BY ISBN'
+
+        cursor.execute(q_get_libri_biblioteca, (g.user[10], ))
+        libri_biblioteca = cursor.fetchall()
+
+        return render_template('bibliotecaAdmin/gestionelibri.html', libri_biblioteca=libri_biblioteca)

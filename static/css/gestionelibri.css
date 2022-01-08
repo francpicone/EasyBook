@@ -2,3 +2,74 @@
     background-color: whitesmoke;
     padding: 10px;
 }
+
+.filter-container {
+    background-color: whitesmoke;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+#filter{
+    height: 32px;
+    width: 60%;
+    border: 1px solid gray;
+    outline: none;
+    background-color: white;
+    padding: 15px;
+    font-size: 1rem;
+}
+
+#filter-submit{
+    height:32px;
+    margin-left:-5px !important;
+    padding-left: 25px;
+    padding-right: 25px;
+    border: none;
+    border-left: 1px solid;
+    border-color: gray;
+    outline: none;
+    background-color: #cc0000;
+    color: white;
+}
+
+.modal-content {
+    border-radius: 0;
+    border: none;
+}
+
+.close-modal {
+    border: none;
+    background-color: transparent;
+    font-size: 24pt;
+    color: white;
+}
+
+.modal-header {
+    background-color: #CC0000;
+    color: white;
+    border-radius: 0 !important;
+    border: none;
+}
+
+.btn-red {
+    background-color: #CC0000;
+    color: white;
+    border-radius: 0;
+    border: none;
+}
+
+.btn-secondary {
+    border-radius: 0 !important;
+    border: none;
+}
+
+@media only screen and (max-width: 480px) {
+    .col-100-mobile {
+        width: 100% !important;
+    }
+
+    #filter{
+    margin-top: 10px;
+}
+
+}

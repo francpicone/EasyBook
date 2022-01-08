@@ -35,8 +35,6 @@ def posto_disponibile(bibid, data):
     elif posti_disponibili > 0:
         return True
 
-
-
 @bp.route('/libro/<bookid>')
 @auth.login_required
 def get_libro(bookid):
@@ -481,7 +479,7 @@ def set_num_posti():
         else:
             return jsonify(status="error")
 
-@bp.route('/gestionelibri')
+@bp.route('/gestionelibri', methods=('POST','GET'))
 @auth.login_required
 def gestione_libri():
 
@@ -490,11 +488,165 @@ def gestione_libri():
 
     else:
 
+        filter = '%' + request.args['filter'] + '%'
+
         dbconn=mysql.connector.connect(**db.get_config())
         cursor = dbconn.cursor()
-        q_get_libri_biblioteca = 'SELECT count(LIBRO.ISBN), LIBRO.ISBN, titolo, edizione, copertina, AUTORE.nome, AUTORE.cognome, EDITORE.nome FROM LIBRO join COPIA_LIBRO on COPIA_LIBRO.isbn=LIBRO.ISBN JOIN BIBLIOTECA ON COPIA_LIBRO.id_bibl_copia=BIBLIOTECA.Id_biblioteca JOIN AUTORE ON autore_lib = AUTORE.id_aut JOIN EDITORE ON editore_lib = EDITORE.id_editore where Id_biblioteca=%s GROUP BY ISBN'
+        q_get_libri_biblioteca = 'SELECT count(LIBRO.ISBN), LIBRO.ISBN, titolo, edizione, copertina, AUTORE.nome, AUTORE.cognome, EDITORE.nome FROM LIBRO join COPIA_LIBRO on COPIA_LIBRO.isbn=LIBRO.ISBN JOIN BIBLIOTECA ON COPIA_LIBRO.id_bibl_copia=BIBLIOTECA.Id_biblioteca JOIN AUTORE ON autore_lib = AUTORE.id_aut JOIN EDITORE ON editore_lib = EDITORE.id_editore where Id_biblioteca=%s AND LIBRO.titolo LIKE %s GROUP BY ISBN'
 
-        cursor.execute(q_get_libri_biblioteca, (g.user[10], ))
+        cursor.execute(q_get_libri_biblioteca, (g.user[10], filter, ))
         libri_biblioteca = cursor.fetchall()
 
         return render_template('bibliotecaAdmin/gestionelibri.html', libri_biblioteca=libri_biblioteca)
+
+@bp.route('/setbookqt', methods=('GET','POST'))
+@auth.login_required
+def set_book_qt():
+
+    if g.user[10] is None:
+        return jsonify(status="error",
+                       msg="Non autorizzato.")
+
+    if request.method == 'POST':
+
+        isbn = request.form['isbn']
+        qt_tot = request.form['qt-tot']
+
+        q_get_old_qt = 'SELECT count(LIBRO.ISBN), LIBRO.ISBN, titolo, edizione, copertina, AUTORE.nome, AUTORE.cognome, EDITORE.nome FROM LIBRO join COPIA_LIBRO on COPIA_LIBRO.isbn=LIBRO.ISBN JOIN BIBLIOTECA ON COPIA_LIBRO.id_bibl_copia=BIBLIOTECA.Id_biblioteca JOIN AUTORE ON autore_lib = AUTORE.id_aut JOIN EDITORE ON editore_lib = EDITORE.id_editore where Id_biblioteca=%s AND COPIA_LIBRO.isbn = %s GROUP BY ISBN'
+        q_get_old_qt_disp = 'SELECT count(LIBRO.ISBN), LIBRO.ISBN, titolo, edizione, copertina, AUTORE.nome, AUTORE.cognome, EDITORE.nome FROM LIBRO join COPIA_LIBRO on COPIA_LIBRO.isbn=LIBRO.ISBN JOIN BIBLIOTECA ON COPIA_LIBRO.id_bibl_copia=BIBLIOTECA.Id_biblioteca JOIN AUTORE ON autore_lib = AUTORE.id_aut JOIN EDITORE ON editore_lib = EDITORE.id_editore where Id_biblioteca = %s AND COPIA_LIBRO.isbn = %s AND Disponibile = 1 GROUP BY ISBN'
+
+        dbconn = mysql.connector.connect(**db.get_config())
+        cursor = dbconn.cursor()
+        cursor.execute(q_get_old_qt, (g.user[10], isbn))
+        get_old_qt = cursor.fetchone()
+        old_qt = int(get_old_qt[0]) #vecchia quantità
+        cursor.execute(q_get_old_qt_disp, (g.user[10], isbn))
+        get_old_qt_disp = cursor.fetchone()
+
+        if get_old_qt_disp is not None:
+            old_qt_disp = int(get_old_qt_disp[0]) #vecchia quantità disponibile
+        else:
+            old_qt_disp = 0
+
+
+
+        if old_qt > int(qt_tot):
+
+            diff = old_qt -int(qt_tot) #rimuovere
+
+            if old_qt_disp < diff:
+                return jsonify(status="error",
+                               msg="La quantità effettivamente diponibile è troppo piccola.")
+            else:
+                q_delete_book = 'DELETE FROM `COPIA_LIBRO` where id_bibl_copia = %s AND isbn=%s AND Disponibile = 1 LIMIT %s'
+                cursor.execute(q_delete_book, (g.user[10], isbn, diff))
+                dbconn.commit()
+
+                return jsonify(status="ok",
+                               msg="Quantità modificata correttamente.")
+
+        else:
+            diff = int(qt_tot) - old_qt #aggiungere
+
+            for x in range(diff):
+                q_insert_book = 'INSERT INTO `COPIA_LIBRO` (`num_copia`, `isbn`, `id_bibl_copia`, `Disponibile`) VALUES (0,%s,%s,1)'
+                cursor.execute(q_insert_book, (isbn, g.user[10], ))
+                dbconn.commit()
+
+            return jsonify(status="ok",
+                           msg="Quantità modificata correttamente.")
+
+@bp.route('/nuovolibro', methods=('GET', 'POST'))
+@auth.login_required
+def aggiungi_nuovo_libro():
+
+    result = None
+    generi = None
+    editori = None
+
+    if request.method == 'GET':
+
+        data = '%' + request.args['search'] + '%'
+
+        if data is None:
+            data = '%%'
+
+        dbconn = mysql.connector.connect(**db.get_config())
+        cursor = dbconn.cursor()
+        q_search_book = 'SELECT ISBN, titolo, AUTORE.nome AS Nome_autore, AUTORE.cognome as cognome_autore, GENERE.descrizione_genere as genere, valutazione, edizione, EDITORE.nome as Nome_editore, copertina FROM LIBRO JOIN AUTORE ON LIBRO.autore_lib = AUTORE.id_aut JOIN GENERE ON LIBRO.genere_lib = GENERE.id_genere JOIN EDITORE ON LIBRO.editore_lib = EDITORE.id_editore WHERE titolo LIKE %s OR ISBN=%s OR AUTORE.nome LIKE %s OR AUTORE.cognome LIKE %s OR GENERE.descrizione_genere LIKE %s OR EDITORE.nome LIKE %s'
+        cursor.execute(q_search_book, (data, data, data, data, data, data))
+        result = cursor.fetchall()
+
+        q_get_generi = 'SELECT * FROM GENERE'
+        cursor.execute(q_get_generi)
+        generi = cursor.fetchall()
+
+        q_get_editori = 'SELECT * FROM EDITORE'
+        cursor.execute(q_get_editori)
+        editori = cursor.fetchall()
+
+    return render_template('bibliotecaAdmin/nuovolibro.html', result=result, generi=generi, editori=editori)
+
+@bp.route('/aggiungilibro', methods=('GET', 'POST'))
+@auth.login_required
+def aggiungi_libro():
+
+    if request.method == 'POST':
+
+        isbn = request.form['isbn']
+        titolo = request.form['titolo']
+        nome_autore = request.form['nomeautore']
+        cognome_autore = request.form['cognomeautore']
+        genere = request.form['genere']
+        editore = request.form['editore']
+        edizione = request.form['edizione']
+        descrizione = request.form['descrizione']
+        qt = request.form['qt']
+
+        error = None
+
+        dbconn = mysql.connector.connect(**db.get_config())
+        cursor = dbconn.cursor()
+
+        #Controllo se il libro esiste già in catalogo
+        q_check_esistenza = 'SELECT * FROM LIBRO WHERE ISBN = %s'
+
+        try:
+            cursor.execute(q_check_esistenza, (isbn, ))
+            libro = cursor.fetchone()
+
+        except:
+            error = 'E'' stato riscontrato un errore'
+
+        if libro is None: #Se è none inserisco il nuovo libro
+
+            q_check_autore = 'SELECT * FROM AUTORE WHERE nome = %s AND cognome = %s'
+            cursor.execute(q_check_autore, (nome_autore, cognome_autore, ))
+            check_autore = cursor.fetchone()
+
+            if check_autore is None:
+                q_insert_autore = 'INSERT INTO `AUTORE`(`nome`, `cognome`, `id_aut`) VALUES (%s,%s,0)'
+                cursor.execute(q_insert_autore, (nome_autore, cognome_autore, ))
+                dbconn.commit()
+
+                cursor.execute(q_check_autore, (nome_autore, cognome_autore, ))
+                check_autore = cursor.fetchone()
+                autore = check_autore[2] #ho l'id dell'autore appena inserito
+
+            else:
+                autore = check_autore[2] #se esiste assegno l'id dell'autore
+
+        try:
+            q_insert_book = 'INSERT INTO LIBRO(ISBN, genere_lib, editore_lib, tipo_lib, titolo, valutazione, edizione, copertina, autore_lib, descrizione) VALUES (%s,%s,%s,NULL,%s,%s,%s,%s,%s,%s)'
+            cursor.execute(q_insert_book,(isbn, genere, editore, titolo, 0, edizione, '/', autore, descrizione))
+            dbconn.commit()
+        except:
+            error = 'E'' stato riscontrato un errore'
+
+        return jsonify(status="ok",
+                       msg="libro inserito correttamente")
+
+
+
+
+

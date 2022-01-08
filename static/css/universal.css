@@ -12,7 +12,9 @@
     background-color: #CC0000;
     color: white;
     border-radius: 0;
-    padding: 5px;
+    padding: 3px;
+    padding-left: 8px;
+    padding-right: 8px;
 
 }
 
@@ -23,6 +25,14 @@
 .datepicker {
     border: 1px solid lightgray !important;
     padding: 5px !important;
+}
+
+.red-a {
+    color: #CC0000;
+}
+
+.red-a:hover {
+    color: #bb0000;
 }
 
 .red {

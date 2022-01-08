@@ -11,13 +11,22 @@
     <h5>Gestione libri</h5>
 </div>
 
-<div class="container u-mt-50">
+<div class="container filter-container">
     <div class="row">
-        <div class="col">
-            <button class="red-button"><svg style="margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+        <div class="col-4 col-100-mobile">
+            <button onclick="window.location.href='{{ url_for('biblioteca.aggiungi_nuovo_libro') }}?search=';" class="red-button"><svg style="margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
                 <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
             </svg><span style="vertical-align: middle;">AGGIUNGI LIBRO</span>
             </button>
+        </div>
+        <div class="col col-100-mobile">
+            <form method="GET" action="{{ url_for('biblioteca.gestione_libri') }}">
+                    <input type="search" id="filter" name="filter">
+                    <button type="submit" id="filter-submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+            </form>
         </div>
     </div>
 </div>
@@ -56,17 +65,83 @@
             <span class="book-descr-title small">Edizione:</span> <span class="book-descr small">{{ book[3] }}</span><br>
             <span class="book-descr-title small">Editore:</span> <span class="book-descr small">{{ book[7] }}</span><br>
             <span class="book-descr-title small">Quantità totale:</span> <span class="book-descr small">{{ book[0] }}</span><br>
-              <span class="book-descr-title small">Quantità disponibile:</span> <span class="book-descr small">{{ book[0] }}</span><br>
-            <form method="POST" class="annullaprenotazione mt-2">
-                <button class="red-button small"><svg style="margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
-                    </svg><span style="vertical-align: middle;">MODIFICA</span>
-                </button>
-            </form>
+            <span class="book-descr-title small">Quantità disponibile:</span> <span class="book-descr small">{{ book[0] }}</span><br>
+            <input type="hidden" id="isbn-{{ book[1] }}" value="{{ book[1] }}">
+            <input type="hidden" id="quantity-{{ book[1] }}" value="{{ book[0] }}">
+            <input type="hidden" id="title-{{ book[1] }}" value="{{ book[2] }}">
+            <a data-bs-toggle="modal" data-bs-target="#postiaulaModal" href="#" onclick="selectBook(document.getElementById('isbn-{{ book[1] }}').value,document.getElementById('quantity-{{ book[1] }}').value, document.getElementById('title-{{ book[1] }}').value)" class="red-a no-decoration small edit-book"><svg style="margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                </svg><span style="vertical-align: middle;">MODIFICA</span>
+            </a>
         </div>
     </div>
     {% endfor %}
 </div>
+
+<div class="modal fade" id="postiaulaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modifica quantità</h5>
+          <button type="button" class="close close-modal" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+           <h6 class="red" id="titolo_libro"></h6>
+           <form id="setQuantitaTotale" method="POST"  action="{{ url_for('biblioteca.set_book_qt') }}">
+              <label for="qt-totale">Quantità totale</label>
+              <input class="mt-1 mb-2 form-control form-control-lg" type="number" id="qt-tot" name="qt-tot"><br>
+              <input type="hidden" id="isbn" name="isbn">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+              <button id="salvaqt" type="submit" class="btn btn-primary btn-red">Salva</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+
+    function selectBook(isbn, quantity, title){
+        qt = quantity;
+        tit = title;
+
+        document.getElementById('qt-tot').value = quantity;
+        document.getElementById('titolo_libro').innerText = title;
+        document.getElementById('isbn').value = isbn;
+
+    }
+
+    $('#setQuantitaTotale').submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        url: '{{ url_for('biblioteca.set_book_qt') }}',
+        data: $(this).serialize(),
+        type: 'POST',
+
+        success: function(data) {
+
+            if (data.status === 'ok') {
+                alert(data.msg)
+
+                setTimeout(function(){
+                    window.location.reload()
+                    }, 2000);
+
+            }
+
+            if (data.status === 'error') {
+
+            }
+        },
+        error: function (){
+            alert("error")
+        },
+    });
+});
+</script>
 
 </body>
 {% endblock %}

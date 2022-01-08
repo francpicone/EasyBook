@@ -1,0 +1,174 @@
+{% include 'navbar.html' %}
+{% block head %}
+    <meta charset="UTF-8">
+    <title>Aggiungi un nuovo libro</title>
+{% endblock %}
+{% block body %}
+
+    <div class="container-fluid u-page-title-container">
+        <h5>Aggiungi libro</h5>
+    </div>
+
+    <div class="container-fluid h-100 p-2">
+    <div class="col h-100">
+        <div class="row justify-content-left h-100">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <article class="card-body">
+                        <div class="form-row">
+                            <div class="col form-group mb-1">
+                                <h6>Aggiungi : </h6>
+                                <fieldset id="group1">
+                                    <input name="tipologiainserimento" id="radiodalibroesistente" type="radio" value="E" onclick="checkAddType()" checked>
+                                    <span class="form-check-label"> Da libro esistente</span>
+                                    <input name="tipologiainserimento" id="radionuovolibro" type="radio" value="N" onclick="checkAddType()">
+                                    <span class="form-check-label"> Nuovo libro</span>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <form id="formcercaesistente" method="GET" action="{{ url_for('biblioteca.aggiungi_nuovo_libro') }}">
+                        <div class="form-row">
+                            <div class="col form-group mb-1">
+                                <input class="mt-2" style="width: 90%;" type="search" id="search" name="search" value="">
+                                <button type="submit" id="search-submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        </form>
+
+                        <div id="resultcontainer" class="container overflow-scroll" style="max-height: 400px;" >
+                        {% if result == None %}
+                            <h6>Nessun risultato trovato</h6>
+                        {% endif %}
+                        {% if result != None %}
+                        {% for book in result %}
+                        <div class="row book-row mt-3">
+                            <div class="col-auto">
+                                <a href="/libro/{{ book[0] }}">
+                                    <img src="{{ book[8] }}" width="96px">
+                                </a>
+                            </div>
+                            <div class="col-auto">
+                                <h5>{{ book[2] }}</h5>
+                                <div class="dropdown-divider"></div>
+                                <span class="book-descr-title small">ISBN:</span> <span class="book-descr small">{{ book[0] }}</span><br>
+                                <span class="book-descr-title small">Autore(i):</span> <span class="book-descr small">{{ book[2] }}&nbsp;{{ book[3] }}</span><br>
+                                <span class="book-descr-title small">Edizione:</span> <span class="book-descr small">{{ book[6] }}</span><br>
+                                <span class="book-descr-title small">Editore:</span> <span class="book-descr small">{{ book[7] }}</span><br>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <form id="formnuovolibro">
+                        <div class="form-row">
+                            <div class="col form-group mb-1">
+                                <label>ISBN </label>
+                                <input  id="isbn" name="isbn" type="text" class="form-control" placeholder="">
+                            </div> <!-- form-group end.// -->
+                            <div class="col form-group mb-1">
+                                <label>Titolo</label>
+                                <input id="titolo" name="titolo" type="text" class="form-control" placeholder="">
+                            </div>
+                            <div class="col form-group mb-1">
+                                <label>Nome autore</label>
+                                <input id="nomeautore" name="nomeautore" type="text" class="form-control" placeholder="">
+                                <label>Cognome autore</label>
+                                <input id="cognomeautore" name="cognomeautore" type="text" class="form-control" placeholder="">
+                            </div>
+                            <div class="col form-group mb-1">
+                                <label for="genere">Genere</label>
+                                <select class="option-big form-control" id="genere" name="genere">
+                                    {% for genere in generi %}
+                                    <option value="{{ genere[0] }}">{{ genere[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col form-group mb-1">
+                                <label for="editore">Editore</label>
+                                <select class="option-big form-control" id="editore" name="editore">
+                                    {% for editore in editori %}
+                                    <option value="{{ editore[0] }}">{{ editore[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col form-group mb-1">
+                                <label>Edizione</label>
+                                <input id="edizione" name="edizione" type="text" class="form-control" placeholder="">
+                            </div>
+                            <div class="col form-group mb-1">
+                                <label>Descrizione</label>
+                                <input id="descrizione" name="descrizione" type="text" class="form-control" placeholder="">
+                            </div>
+                            <div class="col form-group mb-1">
+                                <label>Quantità</label>
+                                <input id="qt" name="qt" type="number" class="form-control" placeholder="0">
+                            </div><!-- form-group end.// -->
+                        </div> <!-- form-row end.// -->
+                        <div class="form-group mb-1">
+                            <button type="submit" id="aggiungilibro" class="btn btn-primary btn-block mt-1"> Aggiungi libro</button>
+                        </div>
+                    </form><!-- form-group// -->
+                </article> <!-- card-body end .// -->
+            </div> <!-- card.// -->
+        </div> <!-- col.//-->
+    </div> <!-- row.//-->
+</div> <!-- col principale-->
+</div>
+
+    <script>
+
+    window.onload = (event) => {
+        checkAddType();
+    };
+
+    function checkAddType() {
+        if (document.getElementById('radiodalibroesistente').checked === true) {
+            document.getElementById('formcercaesistente').style.display = 'block'
+            document.getElementById('resultcontainer').style.display = 'block'
+            document.getElementById('formnuovolibro').style.display = 'none'
+
+        }
+
+        else {
+            document.getElementById('formnuovolibro').style.display = 'block'
+            document.getElementById('formcercaesistente').style.display = 'none'
+            document.getElementById('resultcontainer').style.display = 'none'
+        }
+
+    }
+
+     $('#formnuovolibro').submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        url: '{{ url_for('biblioteca.aggiungi_libro') }}',
+        data: $(this).serialize(),
+        type: 'POST',
+
+        success: function(data) {
+
+            if (data.status === 'ok') {
+                alert(data.msg)
+
+                setTimeout(function(){
+                    window.location.reload()
+                    }, 2000);
+
+            }
+
+            if (data.status === 'error') {
+                alert('error')
+            }
+        },
+        error: function (){
+            alert("error")
+        },
+    });
+});
+
+    </script>
+
+{% endblock %}

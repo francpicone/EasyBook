@@ -6,7 +6,6 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, jsonify, app
 )
 from werkzeug.utils import secure_filename
-from flask_simple_geoip import SimpleGeoIP
 import auth
 import db
 
@@ -57,6 +56,35 @@ def upload_copertina(file):
         file.save(os.path.join('static/resources', filename))
         return redirect(url_for('download_file', name=filename))
 
+
+def rank_calculator():
+
+    dbconn = mysql.connector.connect(**db.get_config())
+    cursor = dbconn.cursor()
+
+    q_get_num_libri_prestito = (
+        'select count(num_copia) as libri_presi from COPIA_LIBRO join PRENDE_IN_PRESTITO on num_copia=num_copia_prestito join UTENTE on PRENDE_IN_PRESTITO.codice_fiscale=UTENTE.cf WHERE CF = %s AND restituito = 2 GROUP BY CF')
+    cursor.execute(q_get_num_libri_prestito, (g.user[3],))
+    r_num_lib_prestito = cursor.fetchone()
+
+    if r_num_lib_prestito is None:
+        num_lib_prestito = 0
+    else:
+        num_lib_prestito = r_num_lib_prestito[0]
+
+    q_get_num_prenotazioni = (
+        'SELECT COUNT(Id_prenotazione) FROM PRENOTAZIONI_POSTO JOIN UTENTE ON Utente = UTENTE.CF WHERE UTENTE.CF = %s AND Data_prenotazione < %s')
+    cursor.execute(q_get_num_prenotazioni, (g.user[3], date.today()))
+    r_num_prenotazioni = cursor.fetchone()
+
+    if r_num_prenotazioni is None:
+        num_prenotazioni = 0
+    else:
+        num_prenotazioni = r_num_prenotazioni[0]
+
+    rank = (num_lib_prestito*0.50 + num_prenotazioni*0.75)*10
+
+    return rank
 
 @bp.route('/libro/<bookid>')
 @auth.login_required

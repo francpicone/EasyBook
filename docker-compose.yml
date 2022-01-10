@@ -1,10 +1,10 @@
 version: '3'
 
 services:
- # web:
-  #  build: .
-   # ports:
-    #- "5000:5000"
+  web:
+    build: .
+    ports:
+    - "5000:5000"
 
   db:
     image: mysql:latest
@@ -15,7 +15,7 @@ services:
       MYSQL_USER: db_user
       MYSQL_PASSWORD: db_user_pass
     ports:
-      - "6033:3306"
+      - "6603:3306"
     volumes:
       - dbdata:/var/lib/mysql
 

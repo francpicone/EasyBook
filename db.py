@@ -5,10 +5,10 @@ from flask.cli import with_appcontext
 
 def get_config():
     config = {
-        'user': 'root',
-        'password': 'pass123',
-        'host': 'localhost',
-        'port': '6033',
+        'user': 'db_user',
+        'password': 'db_user_pass',
+        'host': 'db',
+        'port': '3306',
         'database': 'easybook'
     }
     return config  # restituisce i parametri di connessione al database

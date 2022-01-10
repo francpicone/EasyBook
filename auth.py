@@ -181,7 +181,7 @@ def admin_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user[10] is None:
-            return redirect(url_for('home.index'))
+            return render_template('400.html'), 400
 
         return view(**kwargs)
 

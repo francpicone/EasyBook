@@ -1,14 +1,15 @@
-from flask import Flask, render_template, url_for, redirect, g, make_response, send_file, jsonify
-from flask_simple_geoip import SimpleGeoIP
-import biblioteca_admin
-from auth import login_required
+from flask import Flask, render_template, g, make_response, send_file, jsonify
 from flask_qrcode import QRcode
-import auth, db, Homepage, biblioteca
-import db, mysql.connector
+import Homepage
+import auth
+import biblioteca
+import biblioteca_admin
+import db
+import mysql.connector
+from auth import login_required
 
 app = Flask(__name__, instance_relative_config=True)
 app.config['SECRET_KEY'] = 'SuperSecretKey'
-app.config['GEOIPIFY_API_KEY'] = 'at_R0vifI2MCMShlc25GP8q48I875CUS'
 
 UPLOAD_FOLDER = 'static/resources'
 
@@ -17,22 +18,22 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.register_blueprint(auth.bp)
 app.register_blueprint(Homepage.bp)
 QRcode(app)
-simple_geoip = SimpleGeoIP(app)
 app.register_blueprint(biblioteca.bp)
 app.register_blueprint(biblioteca_admin.bp)
 
-
-@app.route('/getgeoip')
-@auth.login_required
-def get_geo_ip():
-    geoip_data = simple_geoip.get_geoip_data()
-    return jsonify(data=geoip_data)
-
-
 @app.errorhandler(404)
 def page_not_found(e):
-    # note that we set the 404 status explicitly
     return render_template('404.html'), 404
+
+@app.errorhandler(400)
+def page_not_found(e):
+    return render_template('400.html'), 400
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
+
+
 
 
 @app.route('/utente')
@@ -62,7 +63,7 @@ def get_profile():
     cursor.close()
     dbconn.close()
 
-    return render_template('user.html', user=g.user, num_lib=num_lib_prestito, num_prenotazioni=num_prenotazioni, num_posti_aula=num_posti_aula)
+    return render_template('user.html', user=g.user, num_lib=num_lib_prestito, num_prenotazioni=num_prenotazioni, num_posti_aula=num_posti_aula, rank=biblioteca.rank_calculator())
 
 
 @app.route('/sw.js')

@@ -9,7 +9,12 @@
 <body>
 
     <div class="container-fluid u-page-title-container">
-        <h5>Esplora</h5>
+        <a class="no-decoration" href="#" onclick="history.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+        </a>
+        <h5 class="d-inline-block">Esplora</h5>
     </div>
 
 <div class="container-fluid w-100 justify-content-center mt-3">
@@ -29,7 +34,7 @@
                     <a class="carousel-link" href="/libro/{{ book[0] }}"><h5 class="book-title fw-bolder fs-6 mt-2">{{ book[4] }}</h5></a>
                     <span class="book-descr-title small">ISBN:</span> <span class="book-descr small">{{ book[0] }}</span><br>
                     <span class="book-descr-title small">Autore(i):</span> <span class="book-descr small">{{ book[10] }}&nbsp;{{ book[11] }}</span><br>
-                    <span class="book-descr-title small">Genere:</span><span class="book-descr small">{{ book[14] }}&nbsp;{{ book[11] }}</span><br>
+                    <span class="book-descr-title small">Genere:</span><span class="book-descr small">{{ book[14] }}</span><br>
                     <span class="book-descr-title small">Edizione:</span> <span class="book-descr small">{{ book[6] }}</span><br>
                         {% for i in range(book[5]) %}
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ecc800" class="bi bi-star-fill" viewBox="0 0 16 16">

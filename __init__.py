@@ -1,5 +1,5 @@
-from flask import Flask, render_template, url_for, redirect, g, make_response, send_file
-
+from flask import Flask, render_template, url_for, redirect, g, make_response, send_file, jsonify
+from flask_simple_geoip import SimpleGeoIP
 import biblioteca_admin
 from auth import login_required
 from flask_qrcode import QRcode
@@ -8,6 +8,7 @@ import db, mysql.connector
 
 app = Flask(__name__, instance_relative_config=True)
 app.config['SECRET_KEY'] = 'SuperSecretKey'
+app.config['GEOIPIFY_API_KEY'] = 'at_R0vifI2MCMShlc25GP8q48I875CUS'
 
 UPLOAD_FOLDER = 'static/resources'
 
@@ -16,11 +17,16 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.register_blueprint(auth.bp)
 app.register_blueprint(Homepage.bp)
 QRcode(app)
+simple_geoip = SimpleGeoIP(app)
 app.register_blueprint(biblioteca.bp)
 app.register_blueprint(biblioteca_admin.bp)
 
 
-
+@app.route('/getgeoip')
+@auth.login_required
+def get_geo_ip():
+    geoip_data = simple_geoip.get_geoip_data()
+    return jsonify(data=geoip_data)
 
 
 @app.errorhandler(404)

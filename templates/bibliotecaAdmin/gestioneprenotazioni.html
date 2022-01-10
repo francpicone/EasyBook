@@ -1,0 +1,65 @@
+{% include 'navbar.html' %}
+{% block head %}
+    <meta charset="UTF-8">
+    <title>Gestione prenotazioni</title>
+    <link rel="stylesheet" href="../../static/css/gestionelibri.css">
+{% endblock %}
+{% block body %}
+<body>
+
+<div class="container-fluid u-page-title-container">
+    <h5>Gestione prenotazioni</h5>
+</div>
+
+<div class="container filter-container">
+    <div class="row">
+        <div class="col col-100-mobile">
+            <form id="date-filter" method="GET" action="{{ url_for('biblioteca.gestione_prenotazioni') }}">
+                    <input type="date" id="date" name="date">
+                    <button type="submit" class="red-button">FILTRA</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if prenotazioni == [] %}
+    <div class="container justify-content-center align-items-center text-center mt-5">
+        <h1>Ops! Sembra non esserci nessuna prenotazione.</h1>
+        <img class="mt-5" src="../../static/resources/ops_img.png" width="196px">
+    </div>
+{% endif %}
+
+<!--
+0 count(LIBRO.ISBN)
+1 ISBN
+2 titolo
+3 edizione
+4 copertina
+5 nome aut
+6 cognome aut
+7 nome edit
+-->
+
+<div class="container">
+    {% for prenotazione in prenotazioni %}
+            <div style="background-color: whitesmoke; margin: 5px;" class="row p-2">
+                <div class="col">
+                    <span class="small fw-bold">{{ prenotazione[2] }}&nbsp;{{ prenotazione[3] }} - {{ prenotazione[1] }}</span><br>
+                    <span class="small">ID: {{ prenotazione[0] }}</span><br>
+                    <span class="small">Email utente: {{ prenotazione[4] }}</span><br>
+                    <div class="dropdown-divider"></div>
+                </div>
+            </div>
+    {% endfor %}
+</div>
+
+<script>
+$(document).ready(function() {
+    $('#data').on('change', function (e) {
+        $('#date-filter').submit();
+    });
+});
+
+</script>
+</body>
+{% endblock %}

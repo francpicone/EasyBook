@@ -6,13 +6,18 @@
 {% block body %}
 
     <div class="container-fluid u-page-title-container">
-        <h5>Aggiungi libro</h5>
+        <a class="no-decoration" href="#" onclick="history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-arrow-left" viewBox="0 0 16 16">
+             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+        </a>
+        <h5 class="d-inline-block">Aggiungi libro</h5>
     </div>
 
     <div class="container-fluid h-100 p-2">
     <div class="col h-100">
         <div class="row justify-content-left h-100">
-            <div class="col-md-6">
+            <div class="col">
                 <div class="card h-100">
                     <article class="card-body">
                         <div class="form-row">
@@ -39,7 +44,7 @@
                         </div>
                         </form>
 
-                        <div id="resultcontainer" class="container overflow-scroll" style="max-height: 600px;">
+                        <div id="resultcontainer" class="container-fluid overflow-scroll" style="max-height: 600px;">
                         {% if result == None %}
                             <h6>Nessun risultato trovato</h6>
                         {% endif %}
@@ -58,6 +63,12 @@
                                 <span class="book-descr-title small">Autore(i):</span> <span class="book-descr small">{{ book[2] }}&nbsp;{{ book[3] }}</span><br>
                                 <span class="book-descr-title small">Edizione:</span> <span class="book-descr small">{{ book[6] }}</span><br>
                                 <span class="book-descr-title small">Editore:</span> <span class="book-descr small">{{ book[7] }}</span><br>
+                                <form class="aggiungiesistente" id="aggiungiesistente_{{ book[0] }}">
+                                    <input id="isbn" name="isbn" type="hidden" value="{{ book[0] }}">
+                                    <label class="small" for="qt">Quantità da aggiungere:</label>
+                                    <input class="small" name="qt" id="qt" type="number">
+                                    <button class="red-button small" type="submit">AGGIUNGI</button>
+                                </form>
                             </div>
                         </div>
                         {% endfor %}
@@ -144,6 +155,34 @@
         }
 
     }
+
+     $('.aggiungiesistente').submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+        url: '{{ url_for('biblioteca.aggiungi_da_libro_esistente') }}',
+        data: $(this).serialize(),
+        type: 'POST',
+
+        success: function(data) {
+
+            if (data.status === 'ok') {
+                alert(data.msg)
+
+                setTimeout(function(){
+                    window.location.reload()
+                    }, 2000);
+
+            }
+
+            if (data.status === 'error') {
+                alert(data.msg)
+            }
+        },
+        error: function (){
+            alert("error")
+        },
+    });
+});
 
      $('#formnuovolibro').submit(function(e) {
     e.preventDefault();

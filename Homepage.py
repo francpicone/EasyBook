@@ -57,4 +57,8 @@ def dashboard():
         cursor.execute(q_get_ultimi_prestiti, (g.user[10], ))
         ultimi_prestiti = cursor.fetchall()
 
-    return render_template('admindashboard.html', prestiti_totali=prestiti_totali[0], prenotazioni_totali=prenotazioni_totali[0], prestiti_attivi=prestiti_attivi[0], prenotazioni_attive=prenotazioni_attive[0], ultimi_prestiti=ultimi_prestiti)
+        q_get_ultime_prenotazioni = 'SELECT Id_prenotazione, Data_prenotazione, UTENTE.nome_ut, UTENTE.cognome_ut, UTENTE.email FROM `PRENOTAZIONI_POSTO` JOIN UTENTE ON Utente = UTENTE.CF WHERE Id_biblioteca_prenotazione = %s'
+        cursor.execute(q_get_ultime_prenotazioni, (g.user[10],))
+        ultime_prenotazioni = cursor.fetchall()
+
+    return render_template('admindashboard.html', prestiti_totali=prestiti_totali[0], prenotazioni_totali=prenotazioni_totali[0], prestiti_attivi=prestiti_attivi[0], prenotazioni_attive=prenotazioni_attive[0], ultimi_prestiti=ultimi_prestiti, ultime_prenotazioni=ultime_prenotazioni)

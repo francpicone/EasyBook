@@ -1,0 +1,70 @@
+{% include 'navbar.html' %}
+{% block head %}
+    <meta charset="UTF-8">
+    <title>Gestione prenotazioni</title>
+    <link rel="stylesheet" href="../../static/css/gestionelibri.css">
+{% endblock %}
+{% block body %}
+<body>
+
+<div class="container-fluid u-page-title-container">
+    <h5>Gestione prestiti</h5>
+</div>
+
+<div class="container filter-container">
+    <div class="row">
+        <div class="col col-100-mobile">
+            <form id="date-filter" method="GET" action="{{ url_for('biblioteca.gestione_prestiti') }}">
+                    <input type="search" id="filtro" name="filtro">
+                    <button type="submit" class="red-button">CERCA</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% if prestiti == [] %}
+    <div class="container justify-content-center align-items-center text-center mt-5">
+        <h1>Ops! Sembra non esserci nessun prestito.</h1>
+        <img class="mt-5" src="../../static/resources/ops_img.png" width="196px">
+    </div>
+{% endif %}
+
+<!--
+0 count(LIBRO.ISBN)
+1 ISBN
+2 titolo
+3 edizione
+4 copertina
+5 nome aut
+6 cognome aut
+7 nome edit
+-->
+
+<div class="container">
+    {% for prestito in prestiti %}
+            <div style="background-color: whitesmoke; margin: 5px;" class="row p-2">
+                <div class="col-auto">
+                    <img src="{{ prestito[7] }}" height="64px">
+                </div>
+                <div class="col">
+                    <span class="small fw-bold">{{ prestito[6] }}</span><br>
+                    <span class="small">ID: {{ prestito[0] }}</span><br>
+                    <span class="small">Data prestito: {{ prestito[2] }}</span><br>
+                    <span class="small">Data restituzione: {{ prestito[3] }}</span><br>
+                    <span class="small">Utente: {{ prestito[8] }}&nbsp;{{ prestito[9] }} ({{ prestito[1] }})</span><br>
+                    <div class="dropdown-divider"></div>
+                    {% if prestito[4] == 0 %}
+                    <span class="stato-prestito-daritirare small">DA RITIRARE</span>
+                    {% endif %}
+                    {% if prestito[4] == 1 %}
+                     <span class="stato-prestito-dariconsegnare small">DA RICONSEGNARE</span>
+                    {% endif %}
+                    {% if prestito[4] == 2 %}
+                    <span class="stato-prestito-riconsegnato small">RICONSEGNATO</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+</div>
+</body>
+{% endblock %}

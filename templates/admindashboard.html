@@ -8,7 +8,12 @@
 <body>
 
     <div class="container-fluid u-page-title-container">
-        <h5>Dashboard</h5>
+        <a class="no-decoration" href="#" onclick="history.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+        </a>
+        <h5 class="d-inline-block">Dashboard</h5>
     </div>
 
 <div class="container-fluid dashboard-stats-container">
@@ -51,7 +56,7 @@
 7 copertina
 -->
 
-<div class="container-fluid">
+<div class="container-fluid h-100">
     <div class="row">
         <div class="col-auto dashboard-leftbar">
             <a href="{{ url_for('biblioteca.gestione_libri') }}" class="btn-leftbar no-decoration"><svg style="margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookshelf" viewBox="0 0 16 16">
@@ -91,9 +96,25 @@
                 </div>
             </div>
             {% endfor %}
+            <div class="text-center">
+                <a href="{{ url_for('biblioteca.gestione_prestiti') }}" class="red no-decoration">Vedi tutti</a>
+            </div>
         </div>
-        <div class="col dashboard-colonna-libri-dx">
-            <h5>Libri in biblioteca</h5>
+        <div class="col dashboard-colonna-libri-dx h-100">
+            <h5>Ultime prenotazioni</h5>
+            {% for prenotazione in ultime_prenotazioni %}
+            <div style="background-color: whitesmoke; margin: 5px;" class="row p-2">
+                <div class="col">
+                    <span class="small fw-bold">{{ prenotazione[2] }}&nbsp;{{ prenotazione[3] }} - {{ prenotazione[1] }}</span><br>
+                    <span class="small">ID: {{ prenotazione[0] }}</span><br>
+                    <span class="small">Email utente: {{ prenotazione[4] }}</span><br>
+                    <div class="dropdown-divider"></div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="text-center">
+                <a href="{{ url_for('biblioteca.gestione_prenotazioni') }}" class="red no-decoration">Vedi tutte</a>
+            </div>
         </div>
     </div>
 </div>

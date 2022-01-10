@@ -68,7 +68,6 @@ create table LIBRO
 create table COPIA_LIBRO
 (
     num_copia int not null primary key AUTO_INCREMENT,
-    qt int not null,
     isbn int not null,
     id_bibl_copia int not null,
     Disponibile boolean,

@@ -13,4 +13,13 @@ def get_config():
     }
     return config  # restituisce i parametri di connessione al database
 
+def initdb():       #Inizializza un database di prova
+
+    dbconn = mysql.connector.connect(**get_config())
+
+    with open('easybook.sql', 'r') as f:
+        with dbconn.cursor() as cursor:
+            cursor.execute(f.read(), multi=True)
+        dbconn.commit()
+
 

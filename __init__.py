@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, make_response, send_file, jsonify
+from flask import Flask, render_template, g, make_response, send_file, jsonify, redirect, url_for
 from flask_qrcode import QRcode
 import Homepage
 import auth
@@ -34,7 +34,11 @@ def page_not_found(e):
     return render_template('500.html'), 500
 
 
+@app.route('/createdb')
+def create_db():
+    db.initdb()
 
+    return redirect(url_for('auth.login'))
 
 @app.route('/utente')
 @login_required

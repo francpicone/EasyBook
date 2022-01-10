@@ -31,7 +31,7 @@
           <a class="dropdown-item" href="{{ url_for('get_profile') }}">Il tuo Profilo</a>
           {% if g.user[10] == None %}
           <a class="dropdown-item" href="{{ url_for('biblioteca.get_libreria') }}">La tua libreria</a>
-          <a class="dropdown-item" href="{{ url_for('biblioteca.get_prenotazioni') }}">Le tue prenotazioni</a>
+          <a class="dropdown-item" href="{{ url_for('biblioteca.get_prenotazioni') }}">Le tue prenotazioni</a>s
           {% endif %}
           {% if g.user[10] != None %}
           <a class="dropdown-item" href="{{ url_for('home.dashboard') }}">Dashboard</a>

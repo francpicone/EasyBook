@@ -1,17 +1,20 @@
+import os
 from datetime import date, timedelta
 
-from werkzeug.security import generate_password_hash, check_password_hash
-
-import auth, db, Homepage
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
-)
 import mysql.connector
+from flask import (
+    Blueprint, flash, g, redirect, render_template, request, url_for, jsonify, app
+)
+from werkzeug.utils import secure_filename
+
+import auth
+import db
 
 bp = Blueprint('biblioteca', __name__)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
 
 def posto_disponibile(bibid, data):
-
     dbconn = mysql.connector.connect(**db.get_config())
     cursor = dbconn.cursor()
 
@@ -34,6 +37,26 @@ def posto_disponibile(bibid, data):
         return False
     elif posti_disponibili > 0:
         return True
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def upload_copertina(file):
+    # if 'file' not in request.files:
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join('static/resources', filename))
+        return redirect(url_for('download_file', name=filename))
+
 
 @bp.route('/libro/<bookid>')
 @auth.login_required
@@ -171,7 +194,6 @@ def check_posti_disponibili():
 @bp.route('/libreria')
 @auth.login_required
 def get_libreria():
-
     if g.user[10] is None:
         dbconn = mysql.connector.connect(**db.get_config())
         cursor = dbconn.cursor()
@@ -199,7 +221,7 @@ def prenota_libro():
 
         error = None
 
-        #Controllo che l'utente non sia una biblioteca
+        # Controllo che l'utente non sia una biblioteca
         if g.user[10] is not None:
             return jsonify(status="error",
                            msg="Accesso negato alla seguente funzionalità.")
@@ -351,7 +373,7 @@ def prenota_aula():
             return jsonify(status="error",
                            msg="Accesso negato alla seguente funzionalità.")
 
-        #Controllo che l'utente non è già prenotato per quella data in quella biblioteca
+        # Controllo che l'utente non è già prenotato per quella data in quella biblioteca
         q_controllo_prenotazione = (
             'SELECT UTENTE.CF, Id_prenotazione, BIBLIOTECA.Id_biblioteca FROM `PRENOTAZIONI_POSTO` JOIN UTENTE ON Utente = UTENTE.CF JOIN BIBLIOTECA ON Id_biblioteca_prenotazione = BIBLIOTECA.Id_biblioteca WHERE CF = %s AND Data_prenotazione = %s AND BIBLIOTECA.Id_biblioteca = %s')
         cursor.execute(q_controllo_prenotazione, (g.user[3], data, bibid))
@@ -419,7 +441,6 @@ def annulla_prenotazione_aula():
 @bp.route('/prenotazioni', methods=('GET', 'POST'))
 @auth.login_required
 def get_prenotazioni():
-
     if g.user[10] is None:
 
         dbconn = mysql.connector.connect(**db.get_config())
@@ -437,6 +458,7 @@ def get_prenotazioni():
     else:
         return redirect(url_for('home.dashboard'))
 
+
 @bp.route('/esplora')
 @auth.login_required
 def get_pagina_esplora():
@@ -453,8 +475,10 @@ def get_pagina_esplora():
 
     return render_template('esplora.html', books=libri, biblioteche=biblioteche)
 
+
 @bp.route('/cambianumposti', methods=('GET', 'POST'))
 @auth.login_required
+@auth.admin_required
 def set_num_posti():
     if request.method == 'POST':
         num_posti_aula = request.form['posti-tot-aula']
@@ -466,7 +490,7 @@ def set_num_posti():
 
         try:
             q_set_num_posti_aula = 'UPDATE `BIBLIOTECA` SET `Posti_aula_studio`= %s WHERE Id_biblioteca = %s'
-            cursor.execute(q_set_num_posti_aula, (num_posti_aula, g.user[10], ))
+            cursor.execute(q_set_num_posti_aula, (num_posti_aula, g.user[10],))
             dbconn.commit()
             cursor.close()
             dbconn.close()
@@ -479,30 +503,34 @@ def set_num_posti():
         else:
             return jsonify(status="error")
 
-@bp.route('/gestionelibri', methods=('POST','GET'))
-@auth.login_required
-def gestione_libri():
 
+@bp.route('/gestionelibri', methods=('POST', 'GET'))
+@auth.login_required
+@auth.admin_required
+def gestione_libri():
     if g.user[10] is None:
         return redirect(url_for('home.index'))
 
     else:
 
-        filter = '%' + request.args['filter'] + '%'
+        if 'filter' not in request.form:
+            filter = '%%'
+        else:
+            filter = '%' + request.args['filter'] + '%'
 
-        dbconn=mysql.connector.connect(**db.get_config())
+        dbconn = mysql.connector.connect(**db.get_config())
         cursor = dbconn.cursor()
         q_get_libri_biblioteca = 'SELECT count(LIBRO.ISBN), LIBRO.ISBN, titolo, edizione, copertina, AUTORE.nome, AUTORE.cognome, EDITORE.nome FROM LIBRO join COPIA_LIBRO on COPIA_LIBRO.isbn=LIBRO.ISBN JOIN BIBLIOTECA ON COPIA_LIBRO.id_bibl_copia=BIBLIOTECA.Id_biblioteca JOIN AUTORE ON autore_lib = AUTORE.id_aut JOIN EDITORE ON editore_lib = EDITORE.id_editore where Id_biblioteca=%s AND LIBRO.titolo LIKE %s GROUP BY ISBN'
 
-        cursor.execute(q_get_libri_biblioteca, (g.user[10], filter, ))
+        cursor.execute(q_get_libri_biblioteca, (g.user[10], filter,))
         libri_biblioteca = cursor.fetchall()
 
         return render_template('bibliotecaAdmin/gestionelibri.html', libri_biblioteca=libri_biblioteca)
 
-@bp.route('/setbookqt', methods=('GET','POST'))
+
+@bp.route('/setbookqt', methods=('GET', 'POST'))
 @auth.login_required
 def set_book_qt():
-
     if g.user[10] is None:
         return jsonify(status="error",
                        msg="Non autorizzato.")
@@ -519,20 +547,18 @@ def set_book_qt():
         cursor = dbconn.cursor()
         cursor.execute(q_get_old_qt, (g.user[10], isbn))
         get_old_qt = cursor.fetchone()
-        old_qt = int(get_old_qt[0]) #vecchia quantità
+        old_qt = int(get_old_qt[0])  # vecchia quantità
         cursor.execute(q_get_old_qt_disp, (g.user[10], isbn))
         get_old_qt_disp = cursor.fetchone()
 
         if get_old_qt_disp is not None:
-            old_qt_disp = int(get_old_qt_disp[0]) #vecchia quantità disponibile
+            old_qt_disp = int(get_old_qt_disp[0])  # vecchia quantità disponibile
         else:
             old_qt_disp = 0
 
-
-
         if old_qt > int(qt_tot):
 
-            diff = old_qt -int(qt_tot) #rimuovere
+            diff = old_qt - int(qt_tot)  # rimuovere
 
             if old_qt_disp < diff:
                 return jsonify(status="error",
@@ -546,11 +572,11 @@ def set_book_qt():
                                msg="Quantità modificata correttamente.")
 
         else:
-            diff = int(qt_tot) - old_qt #aggiungere
+            diff = int(qt_tot) - old_qt  # aggiungere
 
             for x in range(diff):
                 q_insert_book = 'INSERT INTO `COPIA_LIBRO` (`num_copia`, `isbn`, `id_bibl_copia`, `Disponibile`) VALUES (0,%s,%s,1)'
-                cursor.execute(q_insert_book, (isbn, g.user[10], ))
+                cursor.execute(q_insert_book, (isbn, g.user[10],))
                 dbconn.commit()
 
             return jsonify(status="ok",
@@ -558,18 +584,18 @@ def set_book_qt():
 
 @bp.route('/nuovolibro', methods=('GET', 'POST'))
 @auth.login_required
+@auth.admin_required
 def aggiungi_nuovo_libro():
-
     result = None
     generi = None
     editori = None
 
     if request.method == 'GET':
 
-        data = '%' + request.args['search'] + '%'
-
-        if data is None:
+        if 'search' not in request.form:
             data = '%%'
+        else:
+            data = '%' + request.args['search'] + '%'
 
         dbconn = mysql.connector.connect(**db.get_config())
         cursor = dbconn.cursor()
@@ -587,10 +613,11 @@ def aggiungi_nuovo_libro():
 
     return render_template('bibliotecaAdmin/nuovolibro.html', result=result, generi=generi, editori=editori)
 
+
 @bp.route('/aggiungilibro', methods=('GET', 'POST'))
 @auth.login_required
+@auth.admin_required
 def aggiungi_libro():
-
     if request.method == 'POST':
 
         isbn = request.form['isbn']
@@ -602,51 +629,64 @@ def aggiungi_libro():
         edizione = request.form['edizione']
         descrizione = request.form['descrizione']
         qt = request.form['qt']
+        # copertina = request.files['copertina']
 
         error = None
+        libro = None
 
         dbconn = mysql.connector.connect(**db.get_config())
         cursor = dbconn.cursor()
 
-        #Controllo se il libro esiste già in catalogo
+        # Controllo se il libro esiste già in catalogo
         q_check_esistenza = 'SELECT * FROM LIBRO WHERE ISBN = %s'
 
         try:
-            cursor.execute(q_check_esistenza, (isbn, ))
+            cursor.execute(q_check_esistenza, (isbn,))
             libro = cursor.fetchone()
 
         except:
             error = 'E'' stato riscontrato un errore'
 
-        if libro is None: #Se è none inserisco il nuovo libro
+        if libro is None:  # Se è none inserisco il nuovo libro
+
 
             q_check_autore = 'SELECT * FROM AUTORE WHERE nome = %s AND cognome = %s'
-            cursor.execute(q_check_autore, (nome_autore, cognome_autore, ))
+            cursor.execute(q_check_autore, (nome_autore, cognome_autore,))
             check_autore = cursor.fetchone()
 
             if check_autore is None:
                 q_insert_autore = 'INSERT INTO `AUTORE`(`nome`, `cognome`, `id_aut`) VALUES (%s,%s,0)'
-                cursor.execute(q_insert_autore, (nome_autore, cognome_autore, ))
+                cursor.execute(q_insert_autore, (nome_autore, cognome_autore,))
                 dbconn.commit()
 
-                cursor.execute(q_check_autore, (nome_autore, cognome_autore, ))
+                cursor.execute(q_check_autore, (nome_autore, cognome_autore,))
                 check_autore = cursor.fetchone()
-                autore = check_autore[2] #ho l'id dell'autore appena inserito
+                autore = check_autore[2]  # ho l'id dell'autore appena inserito
 
             else:
-                autore = check_autore[2] #se esiste assegno l'id dell'autore
+                autore = check_autore[2]  # se esiste assegno l'id dell'autore
 
-        try:
-            q_insert_book = 'INSERT INTO LIBRO(ISBN, genere_lib, editore_lib, tipo_lib, titolo, valutazione, edizione, copertina, autore_lib, descrizione) VALUES (%s,%s,%s,NULL,%s,%s,%s,%s,%s,%s)'
-            cursor.execute(q_insert_book,(isbn, genere, editore, titolo, 0, edizione, '/', autore, descrizione))
-            dbconn.commit()
-        except:
-            error = 'E'' stato riscontrato un errore'
+            try:
+                # path_copertina = 'static/resources'+copertina.filename
+                q_insert_book = 'INSERT INTO LIBRO(ISBN, genere_lib, editore_lib, tipo_lib, titolo, valutazione, edizione, copertina, autore_lib, descrizione) VALUES (%s,%s,%s,NULL,%s,%s,%s,%s,%s,%s)'
+                cursor.execute(q_insert_book, (
+                isbn, genere, editore, titolo, 0, edizione, '../static/resources/noavailablecover.png', autore,
+                descrizione, ))
+                dbconn.commit()
 
-        return jsonify(status="ok",
-                       msg="libro inserito correttamente")
+                # upload_copertina(copertina)
 
+               # for x in range(int(qt)):
+                #    q_insert_book = 'INSERT INTO `COPIA_LIBRO` (`num_copia`, `isbn`, `id_bibl_copia`, `Disponibile`) VALUES (0,%s,%s,1)'
+                 #   cursor.execute(q_insert_book, (isbn, g.user[10],))
+                  #  dbconn.commit()
 
+            except:
+                error = 'E'' stato riscontrato un errore'
 
+            return jsonify(status="ok",
+                           msg="libro inserito correttamente")
 
-
+        else:
+            return jsonify(status="error",
+                           msg="Libro già registrato in easybook. (Aggiungere il libro da libro esistente).")

@@ -177,6 +177,16 @@ def login_required(view):
 
     return wrapped_view
 
+def admin_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user[10] is None:
+            return redirect(url_for('home.index'))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
 
 @bp.route('/reimpostapw', methods=('GET', 'POST'))
 @login_required

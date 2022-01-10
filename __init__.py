@@ -8,11 +8,19 @@ import db, mysql.connector
 
 app = Flask(__name__, instance_relative_config=True)
 app.config['SECRET_KEY'] = 'SuperSecretKey'
+
+UPLOAD_FOLDER = 'static/resources'
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 app.register_blueprint(auth.bp)
 app.register_blueprint(Homepage.bp)
 QRcode(app)
 app.register_blueprint(biblioteca.bp)
 app.register_blueprint(biblioteca_admin.bp)
+
+
+
 
 
 @app.errorhandler(404)

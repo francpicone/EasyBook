@@ -39,7 +39,7 @@
                         </div>
                         </form>
 
-                        <div id="resultcontainer" class="container overflow-scroll" style="max-height: 400px;" >
+                        <div id="resultcontainer" class="container overflow-scroll" style="max-height: 600px;">
                         {% if result == None %}
                             <h6>Nessun risultato trovato</h6>
                         {% endif %}
@@ -52,7 +52,7 @@
                                 </a>
                             </div>
                             <div class="col-auto">
-                                <h5>{{ book[2] }}</h5>
+                                <h5>{{ book[1] }}</h5>
                                 <div class="dropdown-divider"></div>
                                 <span class="book-descr-title small">ISBN:</span> <span class="book-descr small">{{ book[0] }}</span><br>
                                 <span class="book-descr-title small">Autore(i):</span> <span class="book-descr small">{{ book[2] }}&nbsp;{{ book[3] }}</span><br>
@@ -63,7 +63,7 @@
                         {% endfor %}
                         {% endif %}
                     </div>
-                    <form id="formnuovolibro">
+                    <form id="formnuovolibro" enctype="multipart/form-data">
                         <div class="form-row">
                             <div class="col form-group mb-1">
                                 <label>ISBN </label>
@@ -106,10 +106,14 @@
                             <div class="col form-group mb-1">
                                 <label>Quantità</label>
                                 <input id="qt" name="qt" type="number" class="form-control" placeholder="0">
-                            </div><!-- form-group end.// -->
+                            </div>
+                            <!--<div class="col form-group mb-1">
+                                <label>Copertina</label>
+                                <input id="copertina" name="copertina" type="file" class="form-control">
+                            </div>--> <!-- form-group end.// -->
                         </div> <!-- form-row end.// -->
                         <div class="form-group mb-1">
-                            <button type="submit" id="aggiungilibro" class="btn btn-primary btn-block mt-1"> Aggiungi libro</button>
+                            <button type="submit" id="aggiungilibro" class="btn btn-primary btn-block mt-1 red-button"> Aggiungi libro</button>
                         </div>
                     </form><!-- form-group// -->
                 </article> <!-- card-body end .// -->

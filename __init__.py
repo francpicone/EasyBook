@@ -39,6 +39,10 @@ def page_not_found(e):
 
 db.initdb()
 
+@app.route('/dbprova')
+def db_di_prova():
+    db.populatedb()
+    return redirect(url_for('auth.login'))
 
 @app.route('/utente')
 @login_required

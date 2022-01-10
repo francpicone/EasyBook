@@ -21,24 +21,24 @@ QRcode(app)
 app.register_blueprint(biblioteca.bp)
 app.register_blueprint(biblioteca_admin.bp)
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
 @app.errorhandler(400)
 def page_not_found(e):
     return render_template('400.html'), 400
+
 
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template('500.html'), 500
 
 
-@app.route('/createdb')
-def create_db():
-    db.initdb()
+db.initdb()
 
-    return redirect(url_for('auth.login'))
 
 @app.route('/utente')
 @login_required
@@ -58,7 +58,7 @@ def get_profile():
 
     if g.user[10] is not None:
         q_get_num_posti_aula = 'SELECT Posti_aula_studio FROM BIBLIOTECA WHERE Id_biblioteca = %s'
-        cursor.execute(q_get_num_posti_aula, (g.user[10], ))
+        cursor.execute(q_get_num_posti_aula, (g.user[10],))
         num_posti_aula = cursor.fetchone()
         num_posti_aula = num_posti_aula[0]
     else:
@@ -67,7 +67,8 @@ def get_profile():
     cursor.close()
     dbconn.close()
 
-    return render_template('user.html', user=g.user, num_lib=num_lib_prestito, num_prenotazioni=num_prenotazioni, num_posti_aula=num_posti_aula, rank=biblioteca.rank_calculator())
+    return render_template('user.html', user=g.user, num_lib=num_lib_prestito, num_prenotazioni=num_prenotazioni,
+                           num_posti_aula=num_posti_aula, rank=biblioteca.rank_calculator())
 
 
 @app.route('/sw.js')
